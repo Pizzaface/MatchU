@@ -79,6 +79,7 @@ schedule8 = {
 
 def find_meeting_times(schedule1, schedule2, schedule3, schedule4=None):
     max_min_times = {}
+    time_difference = {}
     for i in range(1, 8):
         sch1_day = schedule1[i]
         sch2_day = schedule2[i]
@@ -93,9 +94,9 @@ def find_meeting_times(schedule1, schedule2, schedule3, schedule4=None):
             day_ends.append(sch4_day[1])
 
         max_min_times[i] = [max(day_starts), min(day_ends)]
-
-        time_difference = {}
         time_difference[i] = (min(day_ends) - max(day_starts))
+        if time_difference[i] < 0:
+            time_difference[i] = 0
 
     for key in time_difference:
         total_hours = 0
@@ -109,7 +110,7 @@ def find_meeting_times(schedule1, schedule2, schedule3, schedule4=None):
     return max_min_times, time_difference
 
 
-print(find_meeting_times(schedule1, schedule2, schedule3, schedule4))
+print(find_meeting_times(schedule1, schedule2, schedule6, schedule4))
 
 
 class Student:
