@@ -38,6 +38,44 @@ schedule4 = {
 	7: [12, 20]
 }
 
+schedule5 = {
+	1: [1, 2],
+	2: [3, 4],
+	3: [5, 7],
+	4: [1, 5],
+	5: [3, 4],
+	6: [5, 6],
+	7: [7, 8]
+}
+schedule6 = {
+	1: [20, 22],
+	2: [22, 23],
+	3: [23, 24],
+	4: [6, 7],
+	5: [9, 10],
+	6: [1, 2],
+	7: [3, 4]
+}
+
+schedule7 = {
+	1: [4, 5],
+	2: [6, 7],
+	3: [1, 2],
+	4: [23, 24],
+	5: [17, 18],
+	6: [11, 12],
+	7: [6, 7]
+}
+schedule8 = {
+	1: [5, 6],
+	2: [7, 8],
+	3: [10, 11],
+	4: [11, 12],
+	5: [12, 13],
+	6: [18, 19],
+	7: [10, 15]
+}
+
 
 def find_meeting_times(schedule1, schedule2, schedule3, schedule4=None):
     max_min_times = {}
@@ -56,7 +94,19 @@ def find_meeting_times(schedule1, schedule2, schedule3, schedule4=None):
 
         max_min_times[i] = [max(day_starts), min(day_ends)]
 
-    return max_min_times
+        time_difference = {}
+        time_difference[i] = (min(day_ends) - max(day_starts))
+
+    for key in time_difference:
+        total_hours = 0
+        total_hours += time_difference[key]
+
+    if total_hours < 6:
+        print("Schedule does not work.")
+    else:
+        print("Schedule works!")
+
+    return max_min_times, time_difference
 
 
 print(find_meeting_times(schedule1, schedule2, schedule3, schedule4))
@@ -153,7 +203,11 @@ def add_to_group(student, groups):
         groups.append(group)
         return groups
     for i in range(groups.__len__()):
-        if groups[i].__len__ != 4:
+        if groups[i].__len__() < 4:
+            if groups[i].__len__() == 0:
+                group.append(student)
+                groups.append(group)
+                return groups
             if groups[i][0].project == student.project:
                 groups[i].append(student)
                 return groups
@@ -162,8 +216,9 @@ def add_to_group(student, groups):
                 group.append(student)
                 groups.append(group)
                 return groups
+        elif groups[i].__len__() >= 4:
+            continue
         else:
-            #groups[i].__len__ == 4
             group = []
             group.append(student)
             groups.append(group)
@@ -177,8 +232,7 @@ for i in range(students.__len__()):
     groups = add_to_group(students[i], groups)
     #print(students[i].name)
 
-a = 0
 for group in groups:
-    print()
+    print("-----")
     for student in group:
         print(student.name)
