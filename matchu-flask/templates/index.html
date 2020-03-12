@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Expires" content="0">
+
+		<title>Buxsly - A virtual assistant for the modern workplace</title>
+
+
+		<!-- Bootstrap core CSS -->
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+		<link rel="stylesheet" href="{{ url_for('static', filename='fonts/css/all.min.css') }}">
+		<link rel="stylesheet" href="{{ url_for('static', filename='fonts/Teko/stylesheet.css') }}">
+	</head>
+
+	<body id="page-top" class="bg-dark">
+
+		<nav class="navbar navbar-expand-lg fixed-top ">
+		  <a class="navbar-brand mt-auto" href="#page-top">
+		  	<img src="{{ url_for('static', filename='img/logo-reversed-bowtie-new-6.png') }}" width="150px" class="img-fluid d-inline-block align-top" />
+		  </a>
+		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <i class="fas fa-bars fa-1-5x"></i>
+        </button>
+		  <div class="collapse navbar-collapse" id="navbarResponsive">
+		    <ul class="navbar-nav ">
+		      <li class="nav-item active">
+		        <a class="nav-link text-white" href="#about">About</a>
+		      </li>
+		      <li class="nav-item">
+		        <a class="nav-link text-white" href="#funding-cont">Meet Us</a>
+		      </li>
+		    </ul>
+
+		  </div>
+		</nav>
+
+		<!-- Intro Header -->
+		<div class="masthead container-fluid">
+			<div class="intro-body">
+				<h1 id="buxsly-heading" class="text-center">Meet^ Buxsly^</h1>
+				<div class="row">
+					<div class="ml-lg-auto mx-auto col-lg-3 col-md-10 col-sm-12 col-xs-12 mb-6 pr-0" id="speech-example">
+						<div id="bubbles">
+						  <div class="animated bounceInUp bubble-wrap mx-auto">
+						    <div class="bubble left text-dark">
+						       Alexa, tell Buxsly to <i><b>send the budget report</b></i>.
+						    </div>
+						  </div>
+						  <div class="animated delay-1s bounceInUp bubble-wrap mx-auto">
+						    <div class="bubble right text-white buxs-color-1">
+						       Sure thing! Who are we sending it to? <br/ > <i><b>Group One</b></i>, or <i><b>Group Two</b></i>?
+						    </div>
+						  </div>
+						  <div class="animated delay-2s bounceInUp bubble-wrap mx-auto">
+						    <div class="bubble left text-dark">
+						       <i><b>Group One</b></i>.
+						    </div>
+						  </div>
+						  <div class="animated delay-3s bounceInUp bubble-wrap mx-auto">
+						    <div class="bubble right text-white buxs-color-1">
+						       You got it. Sending the message.
+						    </div>
+						  </div>
+						  <div class="d-none d-md-block d-lg-none w-md-100" id="inline-envs">
+							<i class="fas fa-envelope text-white fa-7x animated bounceIn delay-6s faster pr-4"></i>
+							<i class="fas fa-envelope text-white fa-7x animated bounceIn delay-6s faster pr-4"></i>
+							<i class="fas fa-envelope text-white fa-7x animated bounceIn delay-6s faster pr-4"></i>
+						  </div>
+						</div> 
+					</div>
+					<div class="d-md-none d-sm-none d-none d-lg-block mr-auto" id="goes-to">
+						<i class="fas fa-angle-double-right text-buxsly animated slideInLeft delay-5s"></i>
+					</div>
+
+					<div class="mr-auto d-md-none d-sm-none d-none d-lg-block" id="buxsly-hero">
+						<img src="https://picsum.photos/id/156/350/850" class="img-fluid " id="buxsly-main" width="300px" />
+						<div id="action" class="mt-5">
+							<i class="fas fa-envelope fa-7x animated bounceInLeft delay-6s"></i>
+							<br>
+							<i class="fas fa-envelope fa-7x animated bounceInLeft delay-6-5s"></i>
+							<br>
+							<i class="fas fa-envelope fa-7x animated bounceInLeft delay-7s"></i>
+						</div>
+						
+					</div>
+				
+				</div>
+				<div class="row" id="description">
+					<div class="col-lg-12 col-sm-12 bg-dark" id="bottom-text">
+						<a href="#about">
+							<div class="ml-auto mr-auto w-sm-100 buxsly-tagline">
+								
+								<h1 id="meet-buxsly"><i class="fas fa-chevron-down ml-4 float-left d-md-block"></i>A Virtual Assistant For The Modern Workplace<i class="fas fa-chevron-down mr-4 float-right d-md-block d-none"></i></h1>
+							</div>
+						</a>
+						<div class="row">
+							<div class="col-lg-4 d-lg-block d-md-none d-sm-none d-none">
+								<img src="https://picsum.photos/id/156/350/850" class="img-fluid " id="stat-img" width="300px" />
+							</div>
+							<div id="about" class="col-lg-7 col-12 mt-2 ml-0">
+								<h2 id="stat-heading" class="d-none d-md-block pt-lg-5 pt-md-3 pb-5">We may have just met, but I'm all too familiar.</h2>
+								<h3 id="stat-heading" class="d-md-none pt-5 pb-5">We may have just met, but I'm all too familiar.</h3>
+								<div class="row pb-0">
+									<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 figure">
+										<div class="piesite dailyRoutine mx-auto" data-pie="72"><div class="percent mt-n2"><span class="int">72</span><span class="symbol mt-1">%</span></div><div id="slice" class="gt50"><div class="pie" style="transform: rotate(259.2deg);"></div><div class="pie fill" style="transform: rotate(259.2deg);"></div></div></div>
+										<div class="fig-caption">72% of people who own a smart speaker use it as part of their daily routine.<sup><a class="text-buxsly" href="https://www.thinkwithgoogle.com/data/voice-assistance-consumer-experience-daily-routine/">1</a></sup></div>
+									</div>
+									<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 figure">
+										<div class="piesite dailyRoutine mx-auto" data-pie="69"><div class="percent mt-n2"><span class="int">69</span><span class="symbol mt-1">%</span></div><div id="slice" class="gt50"><div class="pie" style="transform: rotate(248.4deg);"></div><div class="pie fill" style="transform: rotate(248.4deg);"></div></div></div>
+										<div class="fig-caption">69% of people can use their smart speaker while doing something else.<sup><a class="text-buxsly" href="https://www.thinkwithgoogle.com/data/voice-assistance-parent-users-typical-use/">2</a></sup></div>
+									</div>
+									<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 figure">
+										<div class="piesite dailyRoutine mx-auto" data-pie="75"><div class="percent mt-n2"><span class="int">75</span><span class="symbol mt-1">%</span></div><div id="slice" class="gt50"><div class="pie" style="transform: rotate(270deg);"></div><div class="pie fill" style="transform: rotate(270deg);"></div></div></div>
+										<div class="fig-caption">75% of respondents believe their organization's goals would be better achieved with automation.<sup><a href="https://www.thinkwithgoogle.com/data/machine-learning-and-automation-statistics/" class="text-buxsly">3</a></sup></div>
+									</div>
+									
+								</div>
+								<img src="{{ url_for('static', filename='img/bowtie.png') }}" class="bowtie-img animated scroll-animations mt-2"  />
+								<div class="mt-3 mb-5 col-12">
+									<p>Hi, I'm Buxsly! I'm a virtual assistant that helps automate parts of your workflow. Using a drag-and-drop interface, you can teach me how to preform parts of the job you do every day.</p>
+									<p>If you're an employer, I alleviate bottlenecks in your company's workflow. My team and I are planning tons of integrations with the services you work with every day. Together, we can work to introduce voice technology within your workplace.</p>
+
+									<a href="#funding-cont">
+										<div class="ml-auto my-auto w-sm-100 buxsly-tagline">
+											
+											<h1 id="cheaper"><i class="fas fa-chevron-down ml-4 float-left d-md-block"></i>Let's keep in touch<i class="fas fa-chevron-down mr-4 float-right d-md-block d-none"></i></h1>
+										</div>
+									</a>								
+								</div>
+							</div>
+					</div>
+
+					<div class="container-fluid mt-5" id="funding-cont">
+						<h1 class="mb-5 mt-3" id="funding-head">Now^ That^ We^'Re^ Introduced^...</h1>
+						<hr />
+						<div class="row">
+							<div class="col-lg-5 d-none d-sm-none d-md-block">
+								<img src="https://picsum.photos/id/156/500/350" class="img-fluid animated swing delay-3s infinite " width="400px" />
+							</div>
+							<div class="col-lg-7 col-sm-12">
+								<span class="my-auto">
+									<button class="btn btn-lg btn-success w-50" id="al-btn">
+										 <i class="fab fa-angellist my-auto pr-3"></i> Meet us on AngelList
+									</button>
+									<br>
+									<button class="btn btn-lg btn-success mt-4 w-50" id="em-btn">
+										<i class="fas fa-envelope-open-text my-auto pr-3"></i> Contact us via Email
+									</button>
+									<div class="text-center my-4">OR</div>
+									<form class="mx-auto">
+										<h5 class="py-3">Subscribe to get updates on where I'm headed next</h5>
+										<input type="email" placeholder="johndoe@example.com" class="form-control w-75 mx-auto" name="sub-email" required="" />
+										<button type="submit" class="btn btn-primary bg-buxsly mt-4">Subscribe</button>
+									</form>
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div></div>
+
+
+		<footer class="mt-n3">
+	      <div class="container mt-4">
+	        <span class="text-white">© 2019 - Made with <i class="fas fa-heart text-buxsly"></i> by the Buxsly Team <a href="#page-top" class="float-right">Top</a></span>
+
+	      </div>
+	    </footer>
+
+
+		<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+		<script type="text/JavaScript">
+			var element =  $('#action > i:nth-child(5), #inline-envs > i')
+			element.on('animationend', function() { 
+				if (element.hasClass('bounceInLeft') || element.hasClass('bounceIn')) {
+					element.removeClass('bounceInLeft');
+					element.removeClass('bounceIn');
+
+					
+					$('#action > i').removeClass("bounceInLeft");
+					$('#action > i').removeClass("bounceIn");
+					$('#action > i').removeClass("delay-6s");
+					$('#inline-envs > i').removeClass("bounceInLeft");
+					$('#inline-envs > i').removeClass("bounceIn");
+					$('#inline-envs > i').removeClass("delay-6s");
+
+					$('#action > i').removeClass("delay-6-5s");
+					$('#action > i').removeClass("delay-7s");
+					$('#action > i').addClass("delay-1s");
+					$('#action > i').addClass('slideOutRight');
+
+					$('#inline-envs > i:nth-child(1)').addClass("delay-3s");
+					$('#inline-envs > i:nth-child(2)').addClass("delay-2s");
+					$('#inline-envs > i:nth-child(3)').addClass("delay-1s");
+					$('#inline-envs > i').addClass('slideOutRight') ;
+				} else {
+					$('#action > i').remove();
+				}
+				
+			})
+
+			$(document).ready(function(){
+
+			   // Check if element is scrolled into view
+			  function isScrolledIntoView(elem) {
+			    var docViewTop = $(window).scrollTop();
+			    var docViewBottom = docViewTop + $(window).height();
+
+			    var elemTop = $(elem).offset().top;
+			    var elemBottom = elemTop + $(elem).height();
+
+			    return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
+			  }
+			  // If element is scrolled into view, fade it in
+			  $(window).scroll(function() {
+
+			    $('.scroll-animations').each(function() {
+			      if (isScrolledIntoView(this) === true) {
+			      	console.log($(this).hasClass("bowtie-img"))
+			        if($(this).hasClass("bowtie-img")) {
+			        	$(this).addClass("rubberBand delay-2s")
+
+			        }
+			      } else {
+			      	if($(this).hasClass("bowtie-img")) {
+			        	$(this).removeClass("rubberBand delay-2s")
+
+			        }
+			      }
+			    });
+			  });
+
+			  // Add smooth scrolling to all links
+			  $("a").on('click', function(event) {
+
+			    // Make sure this.hash has a value before overriding default behavior
+			    if (this.hash !== "") {
+			      // Prevent default anchor click behavior
+			      event.preventDefault();
+
+			      // Store hash
+			      var hash = this.hash;
+
+			      scrollTo = $(hash).offset().top - 80
+			      // Using jQuery's animate() method to add smooth page scroll
+			      // The optional number (800) specifies the number of milliseconds it takes to scroll to the specified area
+			      $('html, body').animate({
+			        scrollTop: scrollTo
+			      }, 750, function(){
+
+			      });
+			    } // End if
+			  });
+			});
+			</script>
+		</script>
+
+	</body>
+
+</html>
