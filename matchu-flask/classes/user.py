@@ -46,6 +46,6 @@ class User(Base):
  
 	def get_id(self):
 		return self.id
- 
+ 		
 	def __repr__(self):
 		return '<User %r>' % (self.username)

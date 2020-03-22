@@ -20,6 +20,7 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from services.database import init_db, db_session, Base
 from models.user import User
 from models.project import Project
+from models.group import Group
 
 # from flask_dance.contrib.google import make_google_blueprint, google
 # from flask_dance.consumer.storage.sqla import OAuthConsumerMixin, SQLAlchemyStorage
@@ -85,19 +86,21 @@ def register():
     email = request.form['email']
     password = generate_password_hash(request.form['password'])
     id = randomString(50) if not 'uid' in request.form else request.form['uid']
+    user_type = request.form['user_type']
     activation_token = randomString(50)
 
     userObject = User.query.filter_by(email=email).first()
     
     if userObject is None:
-        user = User(username=username, password=password, email=email, id=id, activation_token=activation_token)
+        user = User(username=username, password=password, email=email, id=id, user_type=user_type, activation_token=activation_token)
     else:
-        userObject.username = username
-        userObject.password = password
-        userObject.uid = id
-        userObject.activation_token = activation_token
-        user = userObject
-
+        return render_template('login.html', error="There's already someone with that email registered.")
+        # userObject.username = username
+        # userObject.password = password
+        # userObject.uid = id
+        # userObject.activation_token = activation_token
+        # userObject.
+        # user = userObject
     try:
         db_session.add(user)
         db_session.commit()
@@ -125,6 +128,7 @@ def login():
 
         if registered_user.is_authenticated():
             login_user(registered_user, remember=True)
+            # current_user = reload_user(registered_user.id)
             return redirect(url_for("projects"))
         
     elif request.method == "GET":
@@ -152,17 +156,61 @@ def logout():
 def reload_user(userid):
     u = User.query.filter_by(id=userid).first()
     if not u is None:
-        return User(u.username, u.password, u.email, id=userid)
+        return u
     else:
         return 
 
 @login_required
+@app.route("/project/<project_id>")
+def project(project_id):
+    print(current_user.is_part_of_project(project_id))
+    if current_user.is_part_of_project(project_id):
+        project = Project.query.filter_by(project_id=project_id).first()
+
+        return render_template("project.html", project=project)
+    else:
+        return render_template("my-projects.html", error="You don't have access to this project.")
+
+@login_required
+@app.route("/createGroup/<project_id>", methods=["POST"])
+def createGroup(project_id):
+    group_name = request.form['group_name']
+    desc = request.form['desc']
+
+    group = Group(group_name=group_name, project_id=project_id, description=desc)
+    
+    try:
+        db_session.add(group)
+        db_session.commit()
+    except:
+        return url_for("project", project_id=project_id, error="Something went wrong, try again a little later.")
+    else:
+        return url_for("project",  project_id=project_id, success="That group was successfully created.")
+
+@app.route('/api/deleteGroup', methods=["POST"])
+def deleteGroup():
+    group_id = request.form['group_id']
+
+    group = Group.query.filter_by(group_id=group_id).first()
+    
+
+    try:
+        db_session.delete(group)
+        db_session.commit()
+    except:
+        return url_for("project", project_id=project_id, error="Something went wrong, try again a little later.")
+    else:
+        return url_for("macros", success="That group was successfully deleted.")
+
+
+@login_required
 @app.route("/projects")
 def projects():
+    print(current_user)
     if current_user.user_type == "student":
-        return render_template("my-projects.html", current_user=current_user)
+        return render_template("my-projects.html", projects=current_user.get_projects())
     elif current_user.user_type == "teacher":
-        pass
+        return render_template("my-projects.html", projects=current_user.get_projects())
 
 @app.route('/api/createProject', methods=["POST"])
 def createProject():
@@ -170,7 +218,7 @@ def createProject():
     desc = request.form['desc']
 
 
-    project = Project(project_name=project_name, creator=current_user.id, description=desc)
+    project = Project(project_name=project_name, user_id=current_user.id, description=desc)
     
     try:
         db_session.add(project)
@@ -185,8 +233,6 @@ def deleteProject():
     project_id = request.form['project_id']
 
     project = Project.query.filter_by(project_id=project_id).first()
-    project_name = macro.macro_name
-    
 
     try:
         db_session.delete(project)

@@ -11,13 +11,13 @@ class Project(Base):
 	__tablename__ = "projects" 
 	id = Column('project_id', String(80), primary_key=True, unique=True , index=True)
 	project_name = Column('project_name', String(100))
-	creator = Column('creator', String(80), ForeignKey("users.id"))
+	user_id = Column('user_id', String(80), ForeignKey("users.id"))
 	description = Column('description', Text())
 
-	def __init__(self,  project_name, creator, description):
+	def __init__(self,  project_name, user_id, description):
 		self.project_id = randomString(50)
 		self.project_name = project_name
-		self.creator = creator
+		self.user_id = user_id
 		self.description = description
  
 	def __repr__(self):

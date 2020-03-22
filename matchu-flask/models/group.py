@@ -10,23 +10,23 @@ def randomString(stringLength=10):
 	letters = string.ascii_letters + string.digits
 	return ''.join(random.choice(letters) for i in range(stringLength))
 
-class Project(object):
+class Group(object):
 	query = db_session.query_property()
 
-	def __init__(self,  project_name, user_id, description):
-		self.project_id = randomString(50)
-		self.project_name = project_name
+	def __init__(self,  project_name, user_id, solution_desc):
+		self.project_id = db.relationship('projects')
+		self.name = name
 		self.user_id = user_id
-		self.description = description
+		self.solution_desc = solution_desc
  
 	def __repr__(self):
-		return '<Project %r>' % (self.username)
+		return '<Group %r>' % (self.username)
 
 projects = Table('projects', metadata,
-	Column('project_id', String(80), primary_key=True, unique=True , index=True),
-	Column('project_name', String(100)),
-	Column('user_id', String(80), ForeignKey("users.id")),
-	Column('description', Text()),
+	Column('id', String(5)),
+	Column('project_id', String(80)),
+	Column('name', String(100)),
+	Column('solution_desc', Text()),
 
 	extend_existing=True
 )

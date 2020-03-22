@@ -8,9 +8,9 @@ import string
 class StudentToProject(object):
 	query = db_session.query_property()
 
-	def __init__(self, creator, description):
+	def __init__(self, user_id, description):
 		self.project_id = randomString(50)
-		self.creator = creator
+		self.user_id = user_id
  
 	def __repr__(self):
 		return '<Project %r>' % (self.username)
@@ -18,7 +18,7 @@ class StudentToProject(object):
 student_to_projects = Table('student_to_projects', metadata,
 	Column('id', Integer(), primary_key=True),
 	Column('project_id', String(80), ForeignKey('projects.id')),
-	Column('student_id', String(80), ForeignKey('users.id')),
+	Column('user_id', String(80), ForeignKey('users.id')),
 
 	extend_existing=True
 )

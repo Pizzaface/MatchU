@@ -1,0 +1,89 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/slick.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/slick-theme.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/my-projects.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='fonts/css/all.min.css') }}">
+
+
+{% endblock %}
+
+{% block navbar_left %}
+
+{% endblock %}
+
+{% block navbar_right %}
+	<button class="btn btn-primary" data-toggle="modal" data-target="#new-group-modal"><i class="fas fa-plus"></i> Create Group</button>
+{% endblock %}
+
+<div class="modal fade show" tabindex="-1" role="dialog" id="new-group-modal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Create a new Group</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="new-macro-form">
+          <div class="form-group">
+            <label for="macroName">Group Name:</label>
+            <input type="text" class="form-control" id="macroName" name="group_name" placeholder="Your new Group name">
+            <small id="nameHint" class="form-text text-muted"></small>
+          </div>
+          <div class="form-group">
+            <label for="macroDesc">Description:</label>
+            <textarea class="form-control" id="macroDesc" name="desc" placeholder="Put a description for your Group here"> </textarea>
+          </div>
+          <input type="hidden" class="form-control" name="project_id" value="{{ project_id }}">
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" id="save-new-macro" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% block body %}
+	
+	<h1>{{ project.project_name }}</h1>
+	<span id="desc">
+		{{ project.description }}
+	</span>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+	$('#save-new-group').click(function(){
+	    var sendResponse = true;
+	    var values = {};
+	    $("#new-group-form input, textarea").each(function() {
+	      if (this.name == "project_name") {
+	        if ($(this).val() == "") {
+	          $(this).addClass("is-invalid");
+	          if (this.name == "project_name") {
+	            $("#nameHint").removeClass("text-muted");
+	            $("#nameHint").addClass("invalid-feedback");
+	            $("#nameHint").html("You need a valid name.");
+	          }
+	          
+	          sendResponse = false
+	        }
+	      }
+	      values[this.name] = $(this).val();
+	    });
+
+	    if (sendResponse == true) {
+	      $.post("{{ url_for('createProject') }}",values,function(text) {
+	        window.location.replace(text)
+	      })
+	    }
+	    
+	  });
+</script>
+{% endblock %}
