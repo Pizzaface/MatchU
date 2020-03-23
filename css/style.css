@@ -1,0 +1,106 @@
+/* CSS for the day selection buttons in personal schedule */
+#workingDays {
+  padding: 8px 0 16px 0;
+  display: inline-flex;
+}
+
+.workingDayBG{  
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: inline-flex;
+  -webkit-align-items: stretch;
+  align-items: stretch;
+  -webkit-justify-content: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  font-size: 10px;
+  font-weight: 500;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+  background-color: #f1f3f4;
+  color: #80868b;
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+.workingDayBG.selected{
+  color: white;
+  background-color: #1a73e8;
+}
+
+.workingDayTxt{
+  margin-top: 4px;
+}
+/*-----------------------------*/
+
+/* CSS for the collapsable div that displays the row for the day selected and hours available for that day */
+.divWorkingHours{
+  webkit-transition: height 300ms cubic-bezier(0.4,0.0,0.2,1);
+  transition: height 300ms cubic-bezier(0.4,0.0,0.2,1);
+  padding-bottom: 4px;
+  padding-top: 4px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+.txtDay{
+  width: 120px;
+}
+
+.divHours{
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  height: 36px;
+  background-color: #f1f3f4;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.divHours > div{
+  max-width: 47px;
+}
+
+.divHours span{
+  margin: 0;
+  padding: 0 16px;
+  line-height: 36px;
+  background-color: #f1f3f4;
+}
+
+.lblTime{
+  display: block; 
+  position: relative;
+  vertical-align: top;
+  margin-bottom: 0;
+}
+
+.txtTime{
+  -webkit-box-flex: 1;
+    box-flex: 1;
+    -webkit-flex-grow: 1;
+    flex-grow: 1;
+    -webkit-flex-shrink: 1;
+    flex-shrink: 1;
+    background-color: rgba(255,255,255,0);
+    color: #3c4043;
+    border: none;
+    display: block;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 400;
+    height: 24px;
+    line-height: 24px;
+    margin: 0;
+    min-width: 0%;
+    outline: none;
+    padding: 0;
+    z-index: 0;
+}
+/*--------------------------------------*/
