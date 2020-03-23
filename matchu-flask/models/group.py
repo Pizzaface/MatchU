@@ -22,12 +22,12 @@ class Group(object):
 	def __repr__(self):
 		return '<Group %r>' % (self.username)
 
-projects = Table('projects', metadata,
-	Column('id', String(5)),
+groups = Table('groups', metadata,
+	Column('id', String(5), primary_key=True),
 	Column('project_id', String(80)),
 	Column('name', String(100)),
 	Column('solution_desc', Text()),
 
 	extend_existing=True
 )
-mapper(Project, projects)
+mapper(Group, groups)
