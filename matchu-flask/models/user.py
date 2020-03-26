@@ -50,9 +50,14 @@ class User(object):
 
 	def get_projects(self):
 		if self.user_type == "teacher":
-			self.projects = Project.query.filter_by(user_id=self.id)
+			self.projects = Project.query.filter_by(user_id=self.id).all()
 		elif self.user_type == "student":
-			self.projects = StudentToProject.query.filter_by(user_id=self.id)
+			projects = []
+			links = StudentToProject.query.filter_by(user_id=self.id).all()
+			for project in links:
+				projects.append(Project.query.filter_by(project_id=project.project_id).first())
+
+			self.projects = projects
 
 		return self.projects
 

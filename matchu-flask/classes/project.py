@@ -19,6 +19,8 @@ class Project(Base):
 		self.project_name = project_name
 		self.user_id = user_id
 		self.description = description
+		self.groups = relationship("groups")
+ 
  
 	def __repr__(self):
 		return '<Project %r>' % (self.username)

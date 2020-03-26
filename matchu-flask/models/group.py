@@ -1,5 +1,5 @@
 from sqlalchemy import Table, Column, Integer, String, Text, ForeignKey
-from sqlalchemy.orm import mapper
+from sqlalchemy.orm import mapper, relationship
 from services.database import metadata, db_session
 import datetime
 import random
@@ -13,21 +13,26 @@ def randomString(stringLength=10):
 class Group(object):
 	query = db_session.query_property()
 
-	def __init__(self,  project_name, user_id, solution_desc):
-		self.project_id = db.relationship('projects')
-		self.name = name
-		self.user_id = user_id
+	def __init__(self,  group_name, project_id, solution_desc):
+		self.id = randomString(5)
+		self.project_id = project_id
+		self.name = group_name
 		self.solution_desc = solution_desc
  
+	def get_project(self):
+		return Project.query.filter_by(project_id=self.project_id).first()
+		
 	def __repr__(self):
-		return '<Group %r>' % (self.username)
+		return '<Group %r>' % (self.name)
 
 groups = Table('groups', metadata,
 	Column('id', String(5), primary_key=True),
-	Column('project_id', String(80)),
+	Column('project_id', String(80), ForeignKey('projects.project_id')),
 	Column('name', String(100)),
 	Column('solution_desc', Text()),
 
 	extend_existing=True
 )
 mapper(Group, groups)
+
+from .project import Project

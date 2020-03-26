@@ -49,6 +49,9 @@
 			<li class="nav-item">
 				<a class="nav-link" href="{{ url_for("projects") }}">Your Projects</a>
 			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="{{ url_for("logout") }}">Logout</a>
+			</li>
 			{% block navbar_left %}
 				
 			{% endblock %}
@@ -60,26 +63,29 @@
 		</span>
 	  </div>
 	</nav>
-	{% if error or success %}
-		<div class="container" id="message-container">
-			{% if error %}
-				<div class="alert alert-danger fade show" role="alert">
-					{{ error }}
-					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-			{% endif %}
-			{% if success %}
-				<div class="alert alert-success fade show" role="alert">
-					{{ success }}
-					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-			{% endif %}
-		</div>
-	{% endif %}
+	{% block errorhandling %}
+		{% if error or success %}
+			<div class="container" id="message-container">
+				{% if error %}
+					<div class="alert alert-danger fade show" role="alert">
+						{{ error }}
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+				{% endif %}
+				{% if success %}
+					<div class="alert alert-success fade show" role="alert">
+						{{ success }}
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+				{% endif %}
+			</div>
+		{% endif %}
+	{% endblock %}
+	
 	<div class="container-fluid" id="wrap">
 		{% block body %}{% endblock %}
 	

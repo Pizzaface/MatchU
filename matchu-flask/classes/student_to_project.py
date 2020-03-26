@@ -7,9 +7,9 @@ from sqlalchemy.orm import relationship
 
 
 class StudentToProject(Base):
-	__tablename__ = "student_to_projects" 
-	id = Column('id', Integer())
-	project_id = Column(Integer, ForeignKey('projects.id'))
+	__tablename__ = "students_to_projects" 
+	id = Column('id', Integer(), primary_key=True, autoincrement=True)
+	project_id = Column(String(50), ForeignKey('projects.project_id'))
 	student_id = Column(Integer, ForeignKey('users.id'))
 
 	def __init__(self, project_id, student_id):
@@ -18,4 +18,4 @@ class StudentToProject(Base):
 
  
 	def __repr__(self):
-		return '<StudentToProject %r>' % (self.username)
+		return '<StudentToProject %r->%s>' % (self.student_id, self.project_id)

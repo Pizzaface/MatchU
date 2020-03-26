@@ -13,10 +13,11 @@ class Group(Base):
 	project_id = Column('project_id', ForeignKey("projects.id"))
 	description = Column('description', Text())
 
-	def __init__(self,  project_name, user_id, solution_desc):
-		self.project_id = db.relationship('projects')
-		self.name = name
-		self.user_id = user_id
+	def __init__(self,  group_name, project_id, solution_desc):
+		self.id = randomString(5)
+		self.project_id = project_id
+		self.project = Project.query.filter_by(project_id=project_id).first()
+		self.name = group_name
 		self.solution_desc = solution_desc
  
 	def __repr__(self):

@@ -2,11 +2,8 @@
 
 {% block head %}
 
-<link rel="stylesheet" href="{{ url_for('static', filename='css/slick.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/slick-theme.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/my-projects.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='fonts/css/all.min.css') }}">
-
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project.css') }}">
 
 {% endblock %}
 
@@ -18,43 +15,92 @@
 	<button class="btn btn-primary" data-toggle="modal" data-target="#new-group-modal"><i class="fas fa-plus"></i> Create Group</button>
 {% endblock %}
 
-<div class="modal fade show" tabindex="-1" role="dialog" id="new-group-modal">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Create a new Group</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form id="new-macro-form">
-          <div class="form-group">
-            <label for="macroName">Group Name:</label>
-            <input type="text" class="form-control" id="macroName" name="group_name" placeholder="Your new Group name">
-            <small id="nameHint" class="form-text text-muted"></small>
-          </div>
-          <div class="form-group">
-            <label for="macroDesc">Description:</label>
-            <textarea class="form-control" id="macroDesc" name="desc" placeholder="Put a description for your Group here"> </textarea>
-          </div>
-          <input type="hidden" class="form-control" name="project_id" value="{{ project_id }}">
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" id="save-new-macro" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
-</div>
+{% block errorhandling %}
+{% endblock %}
 
 {% block body %}
-	
-	<h1>{{ project.project_name }}</h1>
-	<span id="desc">
-		{{ project.description }}
-	</span>
+	<div class="row h-100 w-100">
+		<div class="col-lg-3 w-100 bg-primary text-white" id="project-info">
+			<div class="info">
+				<h1>{{ project.project_name }}</h1>
+				<span id="desc">
+					{{ project.description }}
+				</span>
+			</div>
+		</div>
+
+		<div class="col-lg-9" id="groups">
+			{% if error or success %}
+				<div id="message-container">
+					{% if error %}
+						<div class="alert alert-danger fade show" role="alert">
+							{{ error }}
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+					{% endif %}
+					{% if success %}
+						<div class="alert alert-success fade show" role="alert">
+							{{ success }}
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+					{% endif %}
+				</div>
+			{% endif %}
+
+			<h1>Student Groups</h1>
+			<div class="row">
+			{% for group in project.groups %}
+				{% if loop.index0 % 3 == 0 %}
+					</div>
+					<div class="row mt-2">
+				{% endif %}
+				<div class="card" style="width: 20rem; margin-left: 8px;">
+				  <div class="card-body">
+				    <h2 class="card-title">{{ group.name }}</h2>
+				    <p class="card-text">{{ group.solution_desc }}</p>
+				    <center><a href="{{ url_for('joinGroup', group_id=group.id) }}" class="btn btn-primary">Join Group</a></center>
+				  </div>
+				</div>
+				
+			{% endfor %}
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade show" tabindex="-1" role="dialog" id="new-group-modal">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title">Create a new Group</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-body">
+	        <form id="new-group-form">
+	          <div class="form-group">
+	            <label for="group_name">Group Name:</label>
+	            <input type="text" class="form-control" id="macroName" name="group_name" placeholder="Your new Project name">
+	          </div>
+	          <div class="form-group">
+	            <label for="macroDesc">Description:</label>
+	            <textarea class="form-control" id="macroDesc" name="desc" placeholder="Put a description for your Group here"> </textarea>
+	          </div>
+	        </form>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	        <button type="button" id="save-new-group" class="btn btn-primary">Save changes</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
+
 {% endblock %}
 
 {% block scripts %}
@@ -63,10 +109,10 @@
 	    var sendResponse = true;
 	    var values = {};
 	    $("#new-group-form input, textarea").each(function() {
-	      if (this.name == "project_name") {
+	      if (this.name == "group_name") {
 	        if ($(this).val() == "") {
 	          $(this).addClass("is-invalid");
-	          if (this.name == "project_name") {
+	          if (this.name == "group_name") {
 	            $("#nameHint").removeClass("text-muted");
 	            $("#nameHint").addClass("invalid-feedback");
 	            $("#nameHint").html("You need a valid name.");
@@ -76,10 +122,11 @@
 	        }
 	      }
 	      values[this.name] = $(this).val();
+	      console.log(this.name)
 	    });
 
 	    if (sendResponse == true) {
-	      $.post("{{ url_for('createProject') }}",values,function(text) {
+	      $.post("{{ url_for('createGroup', project_id=project.project_id) }}",values,function(text) {
 	        window.location.replace(text)
 	      })
 	    }

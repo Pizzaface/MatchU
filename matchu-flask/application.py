@@ -21,7 +21,8 @@ from services.database import init_db, db_session, Base
 from models.user import User
 from models.project import Project
 from models.group import Group
-
+from models.student_to_group import StudentToGroup
+from models.student_to_project import StudentToProject
 # from flask_dance.contrib.google import make_google_blueprint, google
 # from flask_dance.consumer.storage.sqla import OAuthConsumerMixin, SQLAlchemyStorage
 
@@ -161,15 +162,50 @@ def reload_user(userid):
         return 
 
 @login_required
+@nocache
 @app.route("/project/<project_id>")
 def project(project_id):
-    print(current_user.is_part_of_project(project_id))
+    error = request.args.get('error', default = None, type = str)
+    success = request.args.get('success', default = None, type = str)
+
     if current_user.is_part_of_project(project_id):
         project = Project.query.filter_by(project_id=project_id).first()
+
+        print(project.get_groups())
+        if not error == None:
+            return render_template('project.html', project=project, error = error)
+
+        if not success == None:
+            return render_template('project.html', project=project)
+
 
         return render_template("project.html", project=project)
     else:
         return render_template("my-projects.html", error="You don't have access to this project.")
+
+@login_required
+@app.route("/joinGroup/<group_id>", methods=['POST', 'GET'])
+def joinGroup(group_id):
+    group = Group.query.filter_by(id=group_id).first()
+
+    project = group.get_project()
+
+    if current_user.user_type == "student":
+        current_group = StudentToGroup.query.filter_by(user_id=current_user.id, group_id=group_id).first()
+        print(current_group )
+        if current_group == None:
+            student_to_group = StudentToGroup(group_id, current_user.id)
+            try:
+                db_session.add(student_to_group)
+                db_session.commit()
+            except:
+                return redirect(url_for("project", project_id=project.project_id, error="Something went wrong, try again a little later."))
+            else:
+                return redirect(url_for("project",  project_id=project.project_id, success="You were successfully added to that group."))
+        else:
+            return redirect(url_for("project", project_id=project.project_id, error="You are already part of this group."))
+    else:
+        return redirect(url_for("project", project_id=project.project_id, error="Only Students can join groups."))
 
 @login_required
 @app.route("/createGroup/<project_id>", methods=["POST"])
@@ -177,8 +213,8 @@ def createGroup(project_id):
     group_name = request.form['group_name']
     desc = request.form['desc']
 
-    group = Group(group_name=group_name, project_id=project_id, description=desc)
-    
+    group = Group(group_name=group_name, project_id=project_id, solution_desc=desc)
+
     try:
         db_session.add(group)
         db_session.commit()
@@ -206,11 +242,31 @@ def deleteGroup():
 @login_required
 @app.route("/projects")
 def projects():
-    print(current_user)
+    print(current_user.get_projects())
     if current_user.user_type == "student":
         return render_template("my-projects.html", projects=current_user.get_projects())
     elif current_user.user_type == "teacher":
         return render_template("my-projects.html", projects=current_user.get_projects())
+
+@app.route('/api/registerForProject', methods=["POST"])
+def registerForProject():
+    project_id = request.form['project_id']
+
+    proj = Project.query.filter_by(nice_url=project_id).first()
+
+
+    if not current_user.is_part_of_project(proj.project_id):
+        stud_to_proj = StudentToProject(proj.project_id, current_user.id)
+
+        try:
+            db_session.add(stud_to_proj)
+            db_session.commit()
+        except:
+            return url_for("projects", error="There was an error adding your to that project.")
+        else:
+            return url_for("projects", success="You were successfully added.")
+    else:
+        return url_for("projects", success="You are already part of this project.")
 
 @app.route('/api/createProject', methods=["POST"])
 def createProject():
@@ -240,7 +296,7 @@ def deleteProject():
     except:
         return jsonify(False)
     else:
-        return url_for("macros", success="That project was successfully deleted.")
+        return url_for("projects", success="That project was successfully deleted.")
 
 
 
