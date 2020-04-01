@@ -56,14 +56,86 @@
               </div>
             </div>
             {% endfor %}
-          {% else %}
+            {% else %}
+              <div class="container">
+                <div class="row">
+                  <div class="col-sm-9">
+                    <!-- Currently hardcoded - Needs to be populated from DB -->
+                    <h4>Which project are you interested in?</h4>
+                    <div class="input-group mb-3">
+                      <div class="input-group-prepend">
+                        <label class="input-group-text" for="cboProjects">Project</label>
+                      </div>
+                      <select class="custom-select" id="cboProjects">
+                        <option selected>Choose...</option>
+                        <option value="1">Student Matching System</option>
+                        <option value="2">Mesh network sensor array</option>
+                        <option value="3">Build a thoroughly redundant network</option>
+                        <option value="4">Status reporting system for CIS4935</option>
+                      </select>
+                    </div>
 
+                    <!-- Area where project description is listed  -->
+                    <!-- This is populated from index.js -->
+                    <div id='msgbox'>
+
+                    </div>
+
+                    <!-- Currently hardcoded - Needs to be populated based off of project selection above -->
+                    <h4>Which role are you interested in fufilling?</h4>
+                    <div class="input-group mb-3">
+                      <div class="input-group-prepend">
+                        <label class="input-group-text" for="cboRoles">Role</label>
+                      </div>
+                      <select class="custom-select" id="cboRoles">
+                        <option selected>Choose...</option>
+                        <option value="Front End">Front-End</option>
+                        <option value="Back End">Back-End</option>
+                        <option value="Project Manager">Project Manager</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+                    <!-- Area where the role description is displayed once selected -->
+                    <!-- This is populated from index.js -->
+                    <div id='msgboxRoles'>
+
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                      <!-- This would be just populated from the db and show a list of the amount of people currently requesting placement for each project. Allows for people to gravitate toward projects that are being selected and we can probably show projects that are full on the top or bottom and in red or something -->
+                    <ul class="list-group list-group-flush small">
+                    <!-- Header for # of project users -->
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                      <strong>Project</strong>
+                      <i class="fas fa-users" data-toggle="tooltip" title="# of users requesting a group"></i>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                      Student Matching System
+                      <span class="badge badge-primary badge-pill">5</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                      Mesh Network Sensor Array
+                      <span class="badge badge-primary badge-pill">2</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                      Build a thoroughly redundant network
+                      <span class="badge badge-primary badge-pill">1</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                      Status reporting system for CIS4935
+                      <span class="badge badge-primary badge-pill">1</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <button class="btn btn-primary mt-4">Submit Group Request</button>
+            </div>
           {% endif %}
         
       </div>
     </div>
   </div>
-</div>
+
   <hr />
 
 {% endif %}
