@@ -257,7 +257,7 @@
   });
   $('#delete-macro-button').click(function(){
     values = {}
-    values['macro_id'] = $("#deleteMacroID").val()
+    values['project_id'] = $("#deleteMacroID").val()
     $.post("{{ url_for('deleteProject') }}",values,function(text) {
         window.location.replace(text)
       })

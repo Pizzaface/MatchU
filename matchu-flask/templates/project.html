@@ -58,15 +58,20 @@
 					</div>
 					<div class="row mt-2">
 				{% endif %}
-				<div class="card" style="width: 20rem; margin-left: 8px;">
+				<div class="card" style="width: 20rem; margin-left: 8px; min-height: 18rem">
 				  <div class="card-body">
 				    <h2 class="card-title">{{ group.name }}</h2>
 				    <p class="card-text">{{ group.solution_desc }}</p>
-				    <center><a href="{{ url_for('joinGroup', group_id=group.id) }}" class="btn btn-primary">Join Group</a></center>
+				    {% if group.has_member(current_user.id) %}
+						<a href="{{ url_for('leaveGroup', group_id=group.id) }}" class="btn position-absolute btn-danger" style="bottom: 10px; left: 20%; right: 20%">Leave Group</a>
+				    {% else %}
+				    	<center><a href="{{ url_for('joinGroup', group_id=group.id) }}" class="btn btn-primary position-absolute" style="bottom: 10px; left: 20%; right: 20%">Join Group</a></center>
+				    {% endif %}
 				  </div>
 				</div>
 				
 			{% endfor %}
+			
 			</div>
 		</div>
 	</div>

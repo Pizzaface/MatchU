@@ -17,15 +17,29 @@ class StudentToGroup(object):
 		self.id = randomString(5)
 		self.group_id = group_id
 		self.user_id = user_id
- 
+		self.project_id = self.get_group().get_project().project_id
+		self.project = Project.query.filter_by(project_id=self.project_id)
+
+
+	def get_group(self):
+		return Group.query.filter_by(id=self.group_id).first()
+
+	def get_user(self):
+		return User.query.filter_by(id=self.user_id).first()
+
 	def __repr__(self):
 		return '<StudentToGroup %r->%r>' % (self.group_id, self.user_id	)
 
 student_to_groups = Table('student_to_groups', metadata,
 	Column('id', String(5), primary_key=True),
 	Column('group_id', String(80), ForeignKey('groups.id')),
+	Column('project_id', String(80), ForeignKey('projects.project_id')),
 	Column('user_id', String(80), ForeignKey('users.id')),
 
 	extend_existing=True
 )
 mapper(StudentToGroup, student_to_groups)
+
+from .group import Group
+from .user import User
+from .project import Project

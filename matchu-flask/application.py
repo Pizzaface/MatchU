@@ -171,7 +171,7 @@ def project(project_id):
     if current_user.is_part_of_project(project_id):
         project = Project.query.filter_by(project_id=project_id).first()
 
-        print(project.get_groups())
+        groups = project.get_groups()
         if not error == None:
             return render_template('project.html', project=project, error = error)
 
@@ -194,16 +194,43 @@ def joinGroup(group_id):
         current_group = StudentToGroup.query.filter_by(user_id=current_user.id, group_id=group_id).first()
         print(current_group )
         if current_group == None:
-            student_to_group = StudentToGroup(group_id, current_user.id)
-            try:
-                db_session.add(student_to_group)
-                db_session.commit()
-            except:
-                return redirect(url_for("project", project_id=project.project_id, error="Something went wrong, try again a little later."))
+            student_group = StudentToGroup.query.filter_by(user_id=current_user.id, project_id=project.project_id).first()
+
+            if student_group is None:
+                student_to_group = StudentToGroup(group_id, current_user.id)
+                try:
+                    db_session.add(student_to_group)
+                    db_session.commit()
+                except:
+                    return redirect(url_for("project", project_id=project.project_id, error="Something went wrong, try again a little later."))
+                else:
+                    return redirect(url_for("project",  project_id=project.project_id, success="You were successfully added to that group."))
             else:
-                return redirect(url_for("project",  project_id=project.project_id, success="You were successfully added to that group."))
+                return redirect(url_for("project", project_id=project.project_id, error="You are already registered for the group '" + student_group.get_group().name + "'"))
         else:
             return redirect(url_for("project", project_id=project.project_id, error="You are already part of this group."))
+    else:
+        return redirect(url_for("project", project_id=project.project_id, error="Only Students can join groups."))
+
+@login_required
+@app.route("/leaveGroup/<group_id>", methods=['POST', 'GET'])
+def leaveGroup(group_id):
+    group = Group.query.filter_by(id=group_id).first()
+
+    project = group.get_project()
+
+    if current_user.user_type == "student":
+        current_group = StudentToGroup.query.filter_by(user_id=current_user.id, group_id=group_id).first()
+        if current_group == None:
+            return redirect(url_for("project", project_id=project.project_id, error="You are not part of '%s'" % (group.name)))
+        else:
+            try:
+                db_session.delete(current_group)
+                db_session.commit()
+            except:
+                 return redirect(url_for("project", project_id=project.project_id, error="Something went wrong, try again a little later."))
+
+            return redirect(url_for("project", project_id=project.project_id, success="You were removed from '%s'" % (group.name)))
     else:
         return redirect(url_for("project", project_id=project.project_id, error="Only Students can join groups."))
 
@@ -276,8 +303,12 @@ def createProject():
 
     project = Project(project_name=project_name, user_id=current_user.id, description=desc)
     
+    auto_assign_group = Group("Auto-Assign Group", project.project_id, "This is a group that will auto assign you to the group with the best schedule")
+    project.autoAssign_group_id = auto_assign_group.id
+
     try:
         db_session.add(project)
+        db_session.add(auto_assign_group)
         db_session.commit()
     except:
         return url_for("projects", error="Something went wrong, try again a little later.")

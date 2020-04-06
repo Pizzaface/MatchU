@@ -13,13 +13,15 @@ def randomString(stringLength=10):
 class Project(object):
 	query = db_session.query_property()
 
-	def __init__(self,  project_name, user_id, description):
+	def __init__(self,  project_name, user_id, description, autoAssign_group_id = None):
 		self.project_id = randomString(50)
 		self.project_name = project_name
 		self.user_id = user_id
 		self.description = description
-		self.groups = get_groups()
+		self.groups = self.get_groups()
 		self.nice_url = self.project_id[:8]
+
+		self.autoAssign_group_id = autoAssign_group_id
 
 
 	def get_groups(self):
@@ -36,6 +38,7 @@ projects = Table('projects', metadata,
 	Column('user_id', String(80), ForeignKey("users.id")),
 	Column('description', Text()),
 	Column('nice_url', String(8)),
+	Column('autoAssign_group_id', String(5)),
 	extend_existing=True
 )
 mapper(Project, projects)
