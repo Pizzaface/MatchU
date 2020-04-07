@@ -22,6 +22,9 @@ class Group(object):
 	def has_member(self, user_id):
 		return StudentToGroup.query.filter_by(group_id=self.id, user_id=user_id).first() is not None
 
+	def get_members(self):
+		return [x.get_user() for x in StudentToGroup.query.filter_by(group_id=self.id).all()]
+
 	def get_project(self):
 		return Project.query.filter_by(project_id=self.project_id).first()
 		

@@ -3,3 +3,4 @@
         day = $(this).attr("id");
         $('#'+day+'Hours').collapse('toggle');
     })
+
