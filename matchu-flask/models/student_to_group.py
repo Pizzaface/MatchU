@@ -5,16 +5,20 @@ import datetime
 import random
 import string
 
-def randomString(stringLength=10):
-	"""Generate a random string of fixed length """
+"""def randomString(stringLength=10):
+	Generate a random string of fixed length 
 	letters = string.ascii_letters + string.digits
-	return ''.join(random.choice(letters) for i in range(stringLength))
+	return ''.join(random.choice(letters) for i in range(stringLength))"""
+	
+def randomInteger(intLength=10):
+	"""Generate a random int of fixed length"""
+	return random.randint(1,intLength)
 
 class StudentToGroup(object):
 	query = db_session.query_property()
 
 	def __init__(self, group_id, user_id):
-		self.id = randomString(5)
+		self.id = randomInteger(25)
 		self.group_id = group_id
 		self.user_id = user_id
 		self.project_id = self.get_group().get_project().project_id
@@ -31,10 +35,11 @@ class StudentToGroup(object):
 		return '<StudentToGroup %r->%r>' % (self.group_id, self.user_id	)
 
 student_to_groups = Table('student_to_groups', metadata,
-	Column('id', String(5), primary_key=True),
+	Column('id', Integer, primary_key=True),
+	Column('user_id', String(80), ForeignKey('users.id')),
 	Column('group_id', String(80), ForeignKey('groups.id')),
 	Column('project_id', String(80), ForeignKey('projects.project_id')),
-	Column('user_id', String(80), ForeignKey('users.id')),
+	#Column('user_id', String(80), ForeignKey('users.id')),
 
 	extend_existing=True
 )

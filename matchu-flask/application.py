@@ -108,7 +108,7 @@ def register():
 						if (end_time - start_time) > datetime.timedelta(hours=2):
 							schedule[day] = [start_time.strftime("%H:%M"), end_time.strftime("%H:%M")]
 						else:
-							return redirect(url_for('login', error="Please ensure you choose a duration of over 2 hours."))
+							return redirect(url_for('login', error="Please ensure you choose a duration of at least 3 hours."))
 					else:
 						return redirect(url_for('login', error="There was an issue processing the schedule you provided. Please try again."))
 
@@ -226,6 +226,7 @@ def joinGroup(group_id):
 					db_session.add(student_to_group)
 					db_session.commit()
 				except:
+					db_session.rollback()
 					return redirect(url_for("project", project_id=project.project_id, error="Something went wrong, try again a little later."))
 				else:
 					return redirect(url_for("project",  project_id=project.project_id, success="You were successfully added to that group."))
