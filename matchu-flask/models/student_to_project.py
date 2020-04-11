@@ -17,7 +17,6 @@ class StudentToProject(object):
 	query = db_session.query_property()
 
 	def __init__(self, project_id, user_id):
-		self.id = randomString(5)
 		self.project_id = project_id
 		self.user_id = user_id
  
@@ -25,7 +24,7 @@ class StudentToProject(object):
 		return '<StudentToProject %r->%r>' % (self.user_id, self.project_id)
 
 student_to_projects = Table('students_to_projects', metadata,
-	Column('id', String(5), primary_key=True),
+	Column('id', Integer(), primary_key=True),
 	Column('project_id', String(80), ForeignKey('projects.project_id')),
 	Column('user_id', String(80), ForeignKey('users.id')),
 	db.UniqueConstraint('project_id', 'user_id', name='Index 3'),

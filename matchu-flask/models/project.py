@@ -61,7 +61,7 @@ class Project(object):
 
 
 	def get_groups(self):
-		self.groups = Group.query.filter_by(project_id=self.project_id).all()
+		self.groups = Group.query.filter_by(project_id=self.project_id).order_by(Group.name.asc()).all()
 
 		return self.groups
 	
@@ -73,115 +73,139 @@ class Project(object):
 		no_place = []
 
 		members = autoAssign_group.get_members()
-		print(members)
 
 		numberOfMembers = len(members)
 
 		left_overs = numberOfMembers % 3
 		max_groups = numberOfMembers // 3
 
-		if left_overs > 1:
-			max_groups += 1
+		if max_groups in [0, 1]:
+			groups = [members]
+
+		else:
+			if left_overs > 1:
+				max_groups += 1
 
 
-		groups = []
+			groups = []
 
-		while len(groups) != max_groups or numberOfMembers > 1:
-			group = []
-			found_group = False
-			# Loop each member
-			for x in range(numberOfMembers):
-				print("FOUND X", x)
-				# get the current member
-				member = members[x]
-				group.append(member)
+			while len(groups) != max_groups or numberOfMembers > 1:
+				group = []
+				found_group = False
+				# Loop each member
+				for x in range(numberOfMembers):
+					print("FOUND X", x)
+					# get the current member
+					member = members[x]
+					group.append(member)
 
-				schedule = json.loads(member.schedule)
+					schedule = json.loads(member.schedule)
 
-				for y in range(numberOfMembers):
-					print("TESTING Y", y)
-					if x == y:
-						continue
-
-					member2 = members[y]
-					schedule2 = json.loads(member2.schedule)
-
-					compare = compareSchedules(schedule, schedule2)
-
-					if not compare is False:
-						if not len(compare[0]) > 2:
+					for y in range(numberOfMembers):
+						if x == y:
 							continue
 
-						group.append(member2)
-						new_schedule = compare[0]
+						member2 = members[y]
+						schedule2 = json.loads(member2.schedule)
 
-						for z in range(numberOfMembers):
-							print("TESTING Z", z)
+						compare = compareSchedules(schedule, schedule2)
 
-							member3 = members[z]
-
-							if member3 == member2 or member3 == member:
+						if not compare is False:
+							if not len(compare[0]) > 2:
 								continue
 
-							final_schedule = compareSchedules(new_schedule, json.loads(member3.schedule))
+							group.append(member2)
+							new_schedule = compare[0]
 
-							if not final_schedule is False:
-								print("FOUND Z", z)
+							for z in range(numberOfMembers):
+								member3 = members[z]
 
-								print(final_schedule[0])
-								group.append(member3)
-								groups.append(group)
-								found_group = True
+								if member3 == member2 or member3 == member:
+									continue
+
+								final_schedule = compareSchedules(new_schedule, json.loads(member3.schedule))
+
+								if not final_schedule is False:
+									group.append(member3)
+									groups.append(group)
+									found_group = True
+									break
+								
+								if left_overs == 2:
+									groups.append(group)
+									left_overs = 0
+									found_group = True
+									break
+
+							if len(group) == 3 or found_group:
 								break
-							
-							if left_overs == 2:
-								groups.append(group)
-								print(new_schedule)
-								left_overs = 0
-								found_group = True
-								break
 
-						if len(group) == 3 or found_group:
-							print("Found z, breaking")
-							break
+
+					if found_group:
+						break
+
+					if len(group) == 1:
+						no_place.append(member)
+						members.remove(member)
+						numberOfMembers = len(members)
+						break
+
 
 
 				if found_group:
-					break
-
-				if len(group) == 1:
-					no_place.append(member)
-					members.remove(member)
+					for student in group:
+						print(student)
+						members.remove(student)
+					
 					numberOfMembers = len(members)
-					break
+					if numberOfMembers == 3:
+						groups.append(members)
+						members = []
+						break
+
+			members = members + no_place
+			left_overs += len(no_place)
+
+			if not members == []:
+				if len(members) == 1 and left_overs == 1:
+					groups[-1].append(members[0])
+				else:
+					for i in range(0, len(members)):
+						groups.append(members[i:i + 3])
+
+		rows_to_add = []
+		for i, group in enumerate(groups, start=1):
+			groupObj = Group("Group #%s" % (i), self.project_id, "Describe your project here!")
+			
+			try:
+				db_session.add(groupObj)
+				db_session.commit()
+			except:
+				db_session.rollback()
+				return False
+
+			for user in group:
+				stu_to_group = StudentToGroup(group_id=groupObj.id, user_id=user.id)
+				rows_to_add.append(stu_to_group)
 
 
+		db_session.delete(autoAssign_group)
+		db_session.commit()
+		db_session.add_all(rows_to_add)
+		self.autoAssign_group_id = None
+		db_session.commit()
 
-			if found_group:
-				print("FOUND GROUP:", group)
-				print()
-				for student in group:
-					print(student)
-					members.remove(student)
-				
-				numberOfMembers = len(members)
-				if numberOfMembers == 3:
-					groups.append(members)
-					members = []
-					break
+		try:
+			db_session.delete(autoAssign_group)
+			db_session.add_all(rows_to_add)
+			self.autoAssign_group_id = None
+			db_session.commit()
+		except:
+			db_session.rollback()
+			return False
+		else:
+			return True
 
-		members = members + no_place
-		left_overs += len(no_place)
-
-		if not members == []:
-			if len(members) == 1 and left_overs == 1:
-				groups[-1].append(members[0])
-			else:
-				for i in range(0, len(members)):
-					groups.append(members[i:i + 3])
-
-
-		print(groups)
 
  
 	def __repr__(self):
@@ -199,3 +223,4 @@ projects = Table('projects', metadata,
 mapper(Project, projects)
 
 from .group import Group
+from .student_to_group import StudentToGroup

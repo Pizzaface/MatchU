@@ -12,6 +12,9 @@
 {% endblock %}
 
 {% block navbar_right %}
+	{% if current_user.id == project.user_id and not project.autoAssign_group_id == None %}
+		<a href="{{ url_for('assignAutoAssign', project_id=project.project_id) }}"><button class="btn btn-info"><i class="fas fa-user pr-2"></i> Assign Auto-Assign</button></a>
+	{% endif %}
 	<button class="btn btn-primary" data-toggle="modal" data-target="#new-group-modal"><i class="fas fa-plus"></i> Create Group</button>
 {% endblock %}
 
@@ -20,7 +23,7 @@
 
 {% block body %}
 	<div class="row h-100 w-100">
-		<div class="col-lg-3 w-100 bg-primary text-white" id="project-info">
+		<div class="col-lg-3 col-md-4 w-100 bg-primary text-white" id="project-info">
 			<div class="info">
 				<h1>{{ project.project_name }}</h1>
 				<span id="desc">
@@ -29,20 +32,20 @@
 			</div>
 		</div>
 
-		<div class="col-lg-9" id="groups">
-			{% if error or success %}
-				<div id="message-container">
-					{% if error %}
+		<div class="col-lg-9 col-md-8" id="groups">
+			{% if request.args.get('error') or request.args.get('success') %}
+				<div class="container" id="message-container">
+					{% if request.args.get('error') %}
 						<div class="alert alert-danger fade show" role="alert">
-							{{ error }}
+							{{ request.args.get('error') }}
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 								<span aria-hidden="true">&times;</span>
 							</button>
 						</div>
 					{% endif %}
-					{% if success %}
+					{% if request.args.get('success') %}
 						<div class="alert alert-success fade show" role="alert">
-							{{ success }}
+							{{ request.args.get('success') }}
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 								<span aria-hidden="true">&times;</span>
 							</button>
@@ -58,14 +61,33 @@
 					</div>
 					<div class="row mt-2">
 				{% endif %}
-				<div class="card" style="width: 20rem; margin-left: 8px; min-height: 18rem">
+				<div class="card" style="width: 20rem; margin-left: 8px; min-height: 19rem">
 				  <div class="card-body">
-				    <h2 class="card-title">{{ group.name }}</h2>
+				    <h3 class="card-title text-center">{{ group.name }}</h2>
+				    
+				    <p class="card-text text-center">Members: {{ group.get_members()|length }}{% if not group.id == project.autoAssign_group_id %} / 4 {% endif %}</p>
+				    
 				    <p class="card-text">{{ group.solution_desc }}</p>
+				    <ul class="members">
+				    {% if not group.id == project.autoAssign_group_id %}
+				    	{% for user in group.get_members() %}
+				    		<li>{{ user.username }}</li>
+				    	{% endfor %}
+				    {% endif %}
+
 				    {% if group.has_member(current_user.id) %}
 						<a href="{{ url_for('leaveGroup', group_id=group.id) }}" class="btn position-absolute btn-danger" style="bottom: 10px; left: 20%; right: 20%">Leave Group</a>
 				    {% else %}
-				    	<center><a href="{{ url_for('joinGroup', group_id=group.id) }}" class="btn btn-primary position-absolute" style="bottom: 10px; left: 20%; right: 20%">Join Group</a></center>
+				    	{% if current_user.user_type == "teacher" and not group.id == project.autoAssign_group_id %}
+	                      <center><a href="{{ url_for('deleteGroup', group_id=group.id) }}" class="btn btn-danger position-absolute" style="bottom: 10px; left: 20%; right: 20%">Delete Group</a></center>
+	                    {% elif current_user.user_type == "teacher" and group.id == project.autoAssign_group_id %}
+
+	                    {% else %}
+	                    	{% if group.get_members()|length < 4 and not group.id == project.autoAssign_group_id%}
+	                    		<center><a href="{{ url_for('joinGroup', group_id=group.id) }}" class="btn btn-primary position-absolute" style="bottom: 10px; left: 20%; right: 20%">Join Group</a></center>
+	                    	{% endif %}
+	                    {% endif %}
+				    	
 				    {% endif %}
 				  </div>
 				</div>

@@ -28,6 +28,7 @@ class User(object):
 		self.username = username
 		self.password = password
 		self.email = email
+		self.is_anonymous = False
 		
 		self.user_type = user_type
 

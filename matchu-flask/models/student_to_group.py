@@ -17,8 +17,8 @@ def randomInteger(intLength=10):
 class StudentToGroup(object):
 	query = db_session.query_property()
 
+
 	def __init__(self, group_id, user_id):
-		self.id = randomInteger(25)
 		self.group_id = group_id
 		self.user_id = user_id
 		self.project_id = self.get_group().get_project().project_id
@@ -35,7 +35,7 @@ class StudentToGroup(object):
 		return '<StudentToGroup %r->%r>' % (self.group_id, self.user_id	)
 
 student_to_groups = Table('student_to_groups', metadata,
-	Column('id', Integer, primary_key=True),
+	Column('id', Integer(), primary_key=True),
 	Column('user_id', String(80), ForeignKey('users.id')),
 	Column('group_id', String(80), ForeignKey('groups.id')),
 	Column('project_id', String(80), ForeignKey('projects.project_id')),

@@ -57,6 +57,8 @@ login_manager.anonymous_user = Anonymous
 login_manager.init_app(app)
 
 
+debug = True
+
 # When the app is turned off
 @app.teardown_appcontext
 def shutdown_session(exception=None):
@@ -193,8 +195,6 @@ def project(project_id):
 	if current_user.is_part_of_project(project_id):
 		project = Project.query.filter_by(project_id=project_id).first()
 
-		print(project.assign_autoassign())
-
 		groups = project.get_groups()
 		if not error == None:
 			return render_template('project.html', project=project, error = error)
@@ -206,6 +206,21 @@ def project(project_id):
 		return render_template("project.html", project=project)
 	else:
 		return render_template("my-projects.html", error="You don't have access to this project.")
+
+
+@login_required
+@nocache
+@app.route("/assignAutoAssign/<project_id>")
+def assignAutoAssign(project_id):
+	project = Project.query.filter_by(project_id=project_id).first()
+
+	if current_user.id == project.user_id:
+		result = project.assign_autoassign()
+		if result:
+			return redirect(url_for("project", project_id=project.project_id, success="Students were succesfully auto-assigned"))
+		else:
+			return redirect(url_for("project", project_id=project.project_id, error="There was an issue auto assigning groups"))
+		
 
 @login_required
 @app.route("/joinGroup/<group_id>", methods=['POST', 'GET'])
@@ -275,26 +290,25 @@ def createGroup(project_id):
 	else:
 		return url_for("project",  project_id=project_id, success="That group was successfully created.")
 
-@app.route('/api/deleteGroup', methods=["POST"])
-def deleteGroup():
-	group_id = request.form['group_id']
-
-	group = Group.query.filter_by(group_id=group_id).first()
-	
+@app.route('/api/deleteGroup/<group_id>', methods=["GET"])
+def deleteGroup(group_id):
+	group = Group.query.filter_by(id=group_id).first()
+	project_id = group.get_project().project_id
 
 	try:
 		db_session.delete(group)
 		db_session.commit()
 	except:
-		return url_for("project", project_id=project_id, error="Something went wrong, try again a little later.")
+		return redirect(url_for("project", project_id=project_id, error="Something went wrong, try again a little later."))
 	else:
-		return url_for("macros", success="That group was successfully deleted.")
+		return redirect(url_for("project", project_id=project_id, success="That group was successfully deleted."))
 
 
 @login_required
 @app.route("/projects")
 def projects():
-	print(current_user.get_projects())
+	if current_user.is_anonymous == True:
+		return redirect(url_for("login", error="You need to be logged in to do that."))
 	if current_user.user_type == "student":
 		return render_template("my-projects.html", projects=current_user.get_projects())
 	elif current_user.user_type == "teacher":
@@ -335,10 +349,23 @@ def createProject():
 		db_session.add(project)
 		db_session.add(auto_assign_group)
 		db_session.commit()
+
+		if debug:
+			all_students = User.query.filter_by(user_type="student").all()
+			for student in all_students:
+				stud_to_proj = StudentToProject(project.project_id, student.id)
+				stud_to_aass = StudentToGroup(group_id=auto_assign_group.id, user_id=student.id)
+
+				try:
+					db_session.add(stud_to_proj)
+					db_session.add(stud_to_aass)
+					db_session.commit()
+				except:
+					continue
 	except:
 		return url_for("projects", error="Something went wrong, try again a little later.")
 	else:
-		return url_for("projects", success="That project was successfully created.")
+		return url_for("project", project_id=project.project_id, success="That project was successfully created.")
 
 @app.route("/api/leaveProject", methods=["POST"])
 def leaveProject():
