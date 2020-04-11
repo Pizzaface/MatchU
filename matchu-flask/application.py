@@ -339,6 +339,23 @@ def createProject():
 	else:
 		return url_for("projects", success="That project was successfully created.")
 
+@app.route("/api/leaveProject", methods=["POST"])
+def leaveProject():
+	project_id = request.form['project_id']
+	user_id = current_user.id
+
+	connection = StudentToProject(project_id=project_id, user_id=user_id).first()
+
+	try:
+		db_session.delete(project)
+		db_session.commit()
+	except:
+		return jsonify(False)
+	else:
+		return url_for("projects", success="You were successfully unenrolled.")
+
+
+
 @app.route('/api/deleteProject', methods=["POST"])
 def deleteProject():
 	project_id = request.form['project_id']

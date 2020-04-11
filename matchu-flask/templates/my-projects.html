@@ -50,7 +50,12 @@
                   <div class="col-lg-6">
                   </div>
                   <div class="col-lg-6">
-                    <a href="#" data-toggle="modal" class="forget-link" data-macro-id="{{ project.project_id }}" data-target="#delete-macro-modal">Forget</a>
+                    {% if current_user.user_type == "teacher" %}
+                      <a href="#" data-toggle="modal" class="forget-link" data-macro-id="{{ project.project_id }}" data-target="#delete-macro-modal">Delete</a>
+                    {% else %}
+                      <a href="#" data-toggle="modal" class="forget-link" data-macro-id="{{ project.project_id }}" data-target="#leave-macro-modal">Leave</a>
+                    {% endif %}
+                    
                   </div>
                 </div>
               </div>
@@ -190,6 +195,29 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <button type="button" id="save-new-macro" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="delete-macro-modal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Leaving Project</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="delete-macro-form">
+          You will have to rejoin this project with the Project ID!
+          <input type="hidden" class="form-control" name="macro_id" id="deleteMacroID" value="">
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Don't Leave</button>
+        <button type="button" id="delete-macro-button" class="btn btn-primary">Leave</button>
       </div>
     </div>
   </div>
