@@ -132,6 +132,9 @@
 
 {% block scripts %}
 <script type="text/javascript">
+    //fade alert out
+    $(".alert").fadeTo(2000, 500).fadeOut(500);
+  
 	$('#save-new-group').click(function(){
 	    var sendResponse = true;
 	    var values = {};
