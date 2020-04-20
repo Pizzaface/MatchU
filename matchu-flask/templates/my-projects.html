@@ -27,12 +27,13 @@
 
 {% block body %}
 {% if projects is defined and projects[0] is defined %}
-  <h3><center>Your Recent Macros</center></h3>
+  <h3><center>Your Projects</center></h3>
   <div class="row carousel-list">
     <div class="carousel-inner">
       <div class="card-deck">
           {% if projects|length > 0 %}
             {% for project in projects %}
+            <div class="col-sm-6 col-md-4 mt-3">
              <div class="card">
               <!-- <img class="card-img-top" src="http://lorempixel.com/150/250/" alt="Card image cap"> -->
               <div class="card-body">
@@ -48,18 +49,22 @@
               <div class="card-footer">
                 <div class="row">
                   <div class="col-lg-6">
+                    {% if current_user.user_type == "teacher" %}
+                      <a href="#" data-toggle="modal" class="btn-info btn btn-block" >Edit</a>
+                    {% endif %}
                   </div>
                   <div class="col-lg-6">
                     {% if current_user.user_type == "teacher" %}
-                      <a href="#" data-toggle="modal" class="forget-link" data-macro-id="{{ project.project_id }}" data-target="#delete-macro-modal">Delete</a>
+                      <a href="#" data-toggle="modal" class="btn btn-danger btn-block" data-macro-id="{{ project.project_id }}" data-target="#delete-macro-modal">Delete</a>
                     {% else %}
-                      <a href="#" data-toggle="modal" class="forget-link" data-macro-id="{{ project.project_id }}" data-target="#leave-macro-modal">Leave</a>
+                      <a href="#" data-toggle="modal" class="btn btn-danger btn-block" data-macro-id="{{ project.project_id }}" data-target="#leave-macro-modal">Leave</a>
                     {% endif %}
                     
                   </div>
                 </div>
               </div>
             </div>
+              </div>
             {% endfor %}
           {% else %}
             
@@ -277,38 +282,39 @@
     
   });
 
-  $('.card-deck').slick({
-    dots: true,
-    infinite: false,
-    speed: 300,
-    slidesToShow: 4,
-    responsive: [
-      {
-        breakpoint: 1000,
-        settings: {
-          slidesToShow: 4,
-          slidesToScroll: 2
-        }
-      },
-      {
-        breakpoint: 600,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 2
-        }
-      },
-      {
-        breakpoint: 480,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1
-        }
-      }
-      // You can unslick at a given breakpoint now by adding:
-      // settings: "unslick"
-      // instead of a settings object
-    ]
-  });
+//  $('.card-deck').slick({
+//
+//    dots: true,
+//    infinite: false,
+//    speed: 300,
+//    slidesToShow: 4,
+//    responsive: [
+//      {
+//        breakpoint: 1000,
+//        settings: {
+//          slidesToShow: 4,
+//          slidesToScroll: 2
+//        }
+//      },
+//      {
+//        breakpoint: 600,
+//        settings: {
+//          slidesToShow: 2,
+//          slidesToScroll: 2
+//        }
+//      },
+//      {
+//        breakpoint: 480,
+//        settings: {
+//          slidesToShow: 1,
+//          slidesToScroll: 1
+//        }
+//      }
+//      // You can unslick at a given breakpoint now by adding:
+//      // settings: "unslick"
+//      // instead of a settings object
+//    ]
+//  });
 
 </script>
 {% endblock %}
