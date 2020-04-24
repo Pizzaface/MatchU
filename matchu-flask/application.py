@@ -389,8 +389,7 @@ def leaveProject():
 	project_id = request.form['project_id']
 	user_id = current_user.id
 
-	connection = StudentToProject(project_id=project_id, user_id=user_id).first()
-
+	project = StudentToProject.query.filter_by(project_id=project_id, user_id=user_id).first()
 	try:
 		db_session.delete(project)
 		db_session.commit()
