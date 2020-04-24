@@ -89,7 +89,7 @@
           <span style="line-height: 2">Which programming languages are you most proficient with?</span>
         </div>
         <div class="col">
-          <input type="text" id="txtStrengths" name="projStrengths" class="form-control" placeholder="Python, Javascript, C#, ..etc"/>
+          <input type="text" id="txtStrengths" name="projStrengths" class="form-control req" placeholder="Python, Javascript, C#, ..etc"/>
         </div>
       </div>
       <div class="row mt-3">
@@ -97,7 +97,8 @@
         	<span style="line-height: 2">Project ID:</span>
         </div>
         <div class="col">
-        	<input type="text" class="form-control" id="macroName" name="project_id" placeholder="The project ID your teacher gave you.">
+        	<input type="text" class="form-control req" id="macroName" name="project_id" placeholder="The project ID your teacher gave you.">
+			<small id="nameHint" class="form-text text-muted"></small>
         </div> 
       </div>
      </form>
@@ -164,7 +165,7 @@
           </div>
 		  <div class="form-group">
             <label for="macroPill">Pillars:</label>
-            <input type="text" class="form-control" id="macroPill" name="pill" placeholder="Put your project pillars here"> </input>
+            <input type="text" class="form-control" id="macroPill" name="pill" placeholder="Put your project pillars here"/> 
           </div>
         </form>
       </div>
@@ -289,8 +290,7 @@
             $("#nameHint").removeClass("text-muted");
             $("#nameHint").addClass("invalid-feedback");
             $("#nameHint").html("You need a valid ID.");
-          }
-          
+          } 
           sendResponse = false
         }
       }
@@ -302,6 +302,7 @@
         window.location.replace(text)
       })
     }
+
     
   });
   $('#delete-macro-button').click(function(){
@@ -378,9 +379,20 @@
     
   //Disable register button if language text box not filled out
     $(document).ready(function(){
-        $('#btnRegister').prop('disabled',true);
+        $('#register-proj').prop('disabled',true);
         $('#txtStrengths, #macroName').keyup(function(){
-            $('#btnRegister').prop('disabled', this.value == "" ? true : false);     
+			var empty = false;
+			$('#register-project-form input').each(function() {
+				if ($(this).val() == '') {
+					empty = true;
+				}
+				
+				if (empty) {
+					$('#register-proj').prop('disabled', true);
+				} else {
+					$('#register-proj').prop('disabled', false);
+				}
+			});   
         })
     });  
   
