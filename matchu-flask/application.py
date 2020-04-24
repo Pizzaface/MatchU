@@ -318,10 +318,10 @@ def projects():
 @app.route('/api/registerForProject', methods=["POST"])
 def registerForProject():
 	project_id = request.form['project_id']
-
+	
 	proj = Project.query.filter_by(nice_url=project_id).first()
-
-
+	
+	
 	if not current_user.is_part_of_project(proj.project_id):
 		stud_to_proj = StudentToProject(proj.project_id, current_user.id)
 
@@ -367,6 +367,22 @@ def createProject():
 		return url_for("projects", error="Something went wrong, try again a little later.")
 	else:
 		return url_for("project", project_id=project.project_id, success="That project was successfully created.")
+		
+@app.route('/api/editProject', methods=["POST"])
+def editProject():
+	project_id = request.form['project_id']
+	
+	proj = Project.query.filter_by(project_id=project_id).first()
+	
+	proj.project_name = request.form['project_name']
+	proj.description = request.form['desc']
+	
+	try:
+		db_session.commit()
+	except:
+		return url_for("projects", error="Something went wrong, try again a little later.")
+	else:
+		return url_for("projects", success="That project was successfully edited.")
 
 @app.route('/api/leaveProject', methods=["POST"])
 def leaveProject():

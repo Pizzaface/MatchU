@@ -50,7 +50,7 @@
                 <div class="row">
                   <div class="col-lg-6">
                     {% if current_user.user_type == "teacher" %}
-                      <a href="#" data-toggle="modal" class="btn-info btn btn-block"  >Edit</a>
+                      <a href="#" data-toggle="modal" class="btn-info btn btn-block"  data-macro-id="{{ project.project_id }}" data-target="#edit-macro-modal">Edit</a>
                     {% endif %}
                   </div>
                   <div class="col-lg-6">
@@ -220,6 +220,38 @@
   </div>
 </div>
 
+<div class="modal fade show" tabindex="-1" role="dialog" id="edit-macro-modal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Project</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="edit-macro-form">
+          <div class="form-group">
+            <label for="macroName">New Project Name:</label>
+            <input type="text" class="form-control" id="macroName" name="project_name" placeholder="Your new Project name">
+            <small id="nameHint" class="form-text text-muted">New Project Name</small>
+          </div>
+          <div class="form-group">
+            <label for="macroDesc">Description:</label>
+            <textarea class="form-control" id="macroDesc" name="desc" placeholder="Put a new description for your Project here"> </textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" id="save-new-macro" class="btn btn-primary">Save changes
+          <span id='edit-new-macro-span' class="text-light" role="status" aria-hidden="true"></span>
+          <span class="sr-only">Loading...</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %}
 
 {% block scripts %}
@@ -283,6 +315,30 @@
         window.location.replace(text)
       })
   });
+  
+  $('#edit-macro-button').click(function(){
+    var sendResponse = true;
+    var values = {};
+    $("#edit-macro-form input, textarea").each(function() {
+      if (this.name == "project_name") {
+        if ($(this).val() == "") {
+          $(this).addClass("is-invalid");
+          if (this.name == "project_name") {
+            $("#nameHint").removeClass("text-muted");
+            $("#nameHint").addClass("invalid-feedback");
+            $("#nameHint").html("You need a valid name.");
+          } else {
+            $("#invoHint").removeClass("text-muted");
+            $("#invoHint").addClass("invalid-feedback");
+            $("#invoHint").html("You need a valid invocation.");
+          }
+          sendResponse = false
+        }
+      }
+      values[this.name] = $(this).val();
+      
+    });
+	
   $('#save-new-macro').click(function(){
     var sendResponse = true;
     var values = {};
