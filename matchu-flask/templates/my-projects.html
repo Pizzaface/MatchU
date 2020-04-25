@@ -50,7 +50,7 @@
                 <div class="row">
                   <div class="col-lg-6">
                     {% if current_user.user_type == "teacher" %}
-                      <a href="#" data-toggle="modal" class="btn-info btn btn-block"  data-macro-id="{{ project.project_id }}" data-target="#edit-macro-modal">Edit</a>
+                      <a href="#" data-toggle="modal" class="btn-info btn btn-block edit-button"  data-macro-id="{{ project.project_id }}" data-target="#edit-macro-modal">Edit</a>
                     {% endif %}
                   </div>
                   <div class="col-lg-6">
@@ -237,20 +237,21 @@
       <div class="modal-body">
         <form id="edit-macro-form">
           <div class="form-group">
-            <label for="macroName">New Project Name:</label>
-            <input type="text" class="form-control" id="macroName" name="project_name" placeholder="Your new Project name">
-            <small id="nameHint" class="form-text text-muted">New Project Name</small>
+            <label for="macroName">Project Name:</label>
+            <input type="text" class="form-control" id="projectEditName" name="project_name" placeholder="Your new Project name">
+            <small id="nameHint" class="form-text text-muted">Project Name</small>
           </div>
           <div class="form-group">
             <label for="macroDesc">Description:</label>
-            <textarea class="form-control" id="macroDesc" name="desc" placeholder="Put a new description for your Project here"> </textarea>
+            <textarea class="form-control" id="projectEditDesc" name="desc" placeholder="Put a new description for your Project here"> </textarea>
           </div>
+          <input type="hidden" id="editProjectID" name="project_id">
         </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" id="save-new-macro" class="btn btn-primary">Save changes
-          <span id='edit-new-macro-span' class="text-light" role="status" aria-hidden="true"></span>
+        <button type="button" id="edit-macro-button" class="btn btn-primary">Save changes
+          <span id='edit-macro-button-span' class="text-light" role="status" aria-hidden="true"></span>
           <span class="sr-only">Loading...</span></button>
       </div>
     </div>
@@ -267,6 +268,22 @@
     $("#deleteMacroID").val($(this).attr("data-macro-id"))
     $("#leaveMacroID").val($(this).attr("data-macro-id"))
 //    $("#delete-macro-modal > div > div > div.modal-header > h5").text("Are you sure you want to delete " + $("div.card-body > center > a").text() + "?")
+  })
+  $(".edit-button").click(function() {
+    project_id = $(this).attr("data-macro-id")
+    $("#editMacroID").val(project_id)
+    values = {
+      "project_id": project_id
+    }
+    $.getJSON("{{ url_for('getProject') }}", values, function(vals) {
+      $("#projectEditName").val(vals['name'])
+      $("#projectEditDesc").val(vals['desc'])
+      $("#editProjectID").val(project_id)
+    })
+
+
+
+
   })
   $('form input').keydown(function (e) {
       if (e.keyCode == 13) {
@@ -343,6 +360,14 @@
       values[this.name] = $(this).val();
       
     });
+    if (sendResponse == true) {
+      //Show loading wheel on save button click
+      $('#edit-macro-button-span').addClass('spinner-border spinner-border-sm');
+      $.post("{{ url_for('editProject') }}",values,function(text) {
+        window.location.replace(text)
+      })
+    }
+
   });
 	
   $('#save-new-macro').click(function(){

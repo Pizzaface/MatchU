@@ -89,7 +89,9 @@ class Project(object):
 
 			groups = []
 
-			while len(groups) != max_groups or numberOfMembers > 1:
+			while len(groups) != max_groups and numberOfMembers > 1:
+				print("GROUPS", len(groups) != max_groups, len(groups), max_groups)
+				print("MEMBERS", numberOfMembers > 1, numberOfMembers)
 				#print(len(groups), max_groups)
 				group = []
 				found_group = False
@@ -130,7 +132,7 @@ class Project(object):
 
 								final_schedule = compareSchedules(new_schedule, json.loads(member3.schedule))
 
-								if not final_schedule is False or numberOfMembers == 3:
+								if not final_schedule is False:
 									print("member3", member3)
 									group.append(member3)
 									groups.append(group)
@@ -155,7 +157,7 @@ class Project(object):
 					if found_group:
 						break
 
-					if len(group) == 1:
+					if len(group) < 3:
 						no_place.append(member)
 						members.remove(member)
 						numberOfMembers = len(members)
@@ -175,14 +177,15 @@ class Project(object):
 
 				if len(groups) == max_groups - 1:
 					groups.append(no_place)
+					no_place = []
 
-			if not members == []:
-				if len(members) == 1:
-					groups[-1].append(members[0])
+			if not no_place == []:
+				if len(no_place) == 1:
+					groups[-1].append(no_place[0])
 				else:
-					print(members)
-					for i in range(0, len(members)):
-						groups.append(members[i:i + 3])
+					print(no_place)
+					for i in range(0, len(no_place)):
+						groups.append(no_place[i:i + 3])
 
 		rows_to_add = []
 		for i, group in enumerate(groups, start=1):

@@ -3,6 +3,7 @@ from flask_login import AnonymousUserMixin
 class Anonymous(AnonymousUserMixin):
 	def __init__(self):
 		self.username = 'Guest'
+		self.user_type = "None"
 
 	def is_authenticated(self):
 		return False

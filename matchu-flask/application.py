@@ -30,8 +30,8 @@ from models.student_to_project import StudentToProject
 # Anonymous class for flask_login
 from classes.anonymous import Anonymous
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://admin:2020MATCHu!@matchuinstance.cfxzlncqju3l.us-east-1.rds.amazonaws.com:3306/matchu"
+application = Flask(__name__)
+application.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://admin:2020MATCHu!@matchuinstance.cfxzlncqju3l.us-east-1.rds.amazonaws.com:3306/matchu"
 
 
 # -------------------------------------- #
@@ -54,19 +54,19 @@ login_manager = LoginManager()
 login_manager.login_view = "login"
 login_manager.session_protection = "strong"
 login_manager.anonymous_user = Anonymous
-login_manager.init_app(app)
+login_manager.init_app(application)
 
 
-debug = False
+debug = True
 
-# When the app is turned off
-@app.teardown_appcontext
+# When the application is turned off
+@application.teardown_appcontext
 def shutdown_session(exception=None):
 	db_session.close()
 
 
 
-app.config["SECRET_KEY"] = 'adsfasdfasdfsdfasdfasdfqtdhfdfgadfgsdfgdsfgdf235235523512345asdfasdfasdfwqerwqer'
+application.config["SECRET_KEY"] = 'adsfasdfasdfsdfasdfasdfqtdhfdfgadfgsdfgdsfgdf235235523512345asdfasdfasdfwqerwqer'
 def nocache(view):
 	@wraps(view)
 	def no_cache(*args, **kwargs):
@@ -84,7 +84,7 @@ def randomString(stringLength=10):
 	letters = string.ascii_letters + string.digits
 	return ''.join(random.choice(letters) for i in range(stringLength))
 
-@app.route('/register', methods=["POST"])
+@application.route('/register', methods=["POST"])
 def register():
 	username = request.form['username']
 	email = request.form['email']
@@ -94,9 +94,13 @@ def register():
 	activation_token = randomString(50)
 
 	userObject = User.query.filter_by(email=email).first()
+	username_exists = User.query.filter_by(username=username).count()
 	
 
 	if userObject is None:
+		if username_exists:
+			return redirect(url_for('login', error="There's already someone with that username registered."))
+
 		schedule = {}
 		if user_type == "student":
 			days = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"]
@@ -130,13 +134,15 @@ def register():
 		db_session.add(user)
 		db_session.commit()
 		login_user(user)
-	except:
-		return jsonify(False)
-	else:
-		return redirect(url_for("projects", macro_id=None))
+	except Exception as e:
+		print(e)
+		return redirect(url_for('login', error="There was an issue signing you up"))
+
+	
+	return redirect(url_for("projects", macro_id=None))
 
 # somewhere to login
-@app.route("/login", methods=["GET", "POST"])
+@application.route("/login", methods=["GET", "POST"])
 def login():
 	if request.method == 'POST':
 		email = request.form['email']
@@ -171,7 +177,7 @@ def login():
 	return render_template('login.html')
 
 # somewhere to logout
-@app.route("/logout")
+@application.route("/logout")
 @login_required
 def logout():
 	logout_user()
@@ -187,8 +193,35 @@ def reload_user(userid):
 		return 
 
 @login_required
+@application.route("/getProject")
+def getProject():
+	project_id = request.args.get('project_id', default = None, type = str)
+	project = Project.query.filter_by(project_id=project_id).first()
+
+	return jsonify({"name": project.project_name, "desc": project.description})
+
+# @login_required
+# @application.route("/editProject")
+# def editProject():
+# 	project_id = request.args.get('project_id', default = None, type = str)
+# 	project = Project.query.filter_by(project_id=project_id).first()
+
+# 	project.project_name = request.form['project_name']
+# 	project.description = request.form['desc']
+
+# 	try:
+# 		db_session.add(project)
+# 		db_session.commit()
+# 	except:
+# 		db_session.rollback()
+# 		return redirect(url_for("projects", error="Something went wrong, try again a little later."))
+# 	else:
+# 		return redirect(url_for("projects", success="That project was successfully edited."))
+
+
+@login_required
 @nocache
-@app.route("/project/<project_id>")
+@application.route("/project/<project_id>")
 def project(project_id):
 	error = request.args.get('error', default = None, type = str)
 	success = request.args.get('success', default = None, type = str)
@@ -211,7 +244,7 @@ def project(project_id):
 
 @login_required
 @nocache
-@app.route("/assignAutoAssign/<project_id>")
+@application.route("/assignAutoAssign/<project_id>")
 def assignAutoAssign(project_id):
 	project = Project.query.filter_by(project_id=project_id).first()
 
@@ -224,7 +257,7 @@ def assignAutoAssign(project_id):
 		
 
 @login_required
-@app.route("/joinGroup/<group_id>", methods=['POST', 'GET'])
+@application.route("/joinGroup/<group_id>", methods=['POST', 'GET'])
 def joinGroup(group_id):
 	group = Group.query.filter_by(id=group_id).first()
 
@@ -254,7 +287,7 @@ def joinGroup(group_id):
 		return redirect(url_for("project", project_id=project.project_id, error="Only Students can join groups."))
 
 @login_required
-@app.route("/leaveGroup/<group_id>", methods=['POST', 'GET'])
+@application.route("/leaveGroup/<group_id>", methods=['POST', 'GET'])
 def leaveGroup(group_id):
 	group = Group.query.filter_by(id=group_id).first()
 
@@ -276,7 +309,7 @@ def leaveGroup(group_id):
 		return redirect(url_for("project", project_id=project.project_id, error="Only Students can join groups."))
 
 @login_required
-@app.route("/createGroup/<project_id>", methods=["POST"])
+@application.route("/createGroup/<project_id>", methods=["POST"])
 def createGroup(project_id):
 	group_name = request.form['group_name']
 	desc = request.form['desc']
@@ -291,7 +324,7 @@ def createGroup(project_id):
 	else:
 		return url_for("project",  project_id=project_id, success="That group was successfully created.")
 
-@app.route('/api/deleteGroup/<group_id>', methods=["GET"])
+@application.route('/api/deleteGroup/<group_id>', methods=["GET"])
 def deleteGroup(group_id):
 	group = Group.query.filter_by(id=group_id).first()
 	project_id = group.get_project().project_id
@@ -306,16 +339,16 @@ def deleteGroup(group_id):
 
 
 @login_required
-@app.route("/projects")
+@application.route("/projects")
 def projects():
-	if current_user.is_anonymous == True:
+	if current_user.is_anonymous() == True:
 		return redirect(url_for("login", error="You need to be logged in to do that."))
 	if current_user.user_type == "student":
 		return render_template("my-projects.html", projects=current_user.get_projects())
 	elif current_user.user_type == "teacher":
 		return render_template("my-projects.html", projects=current_user.get_projects())
 
-@app.route('/api/registerForProject', methods=["POST"])
+@application.route('/api/registerForProject', methods=["POST"])
 def registerForProject():
 	project_id = request.form['project_id']
 	
@@ -335,7 +368,7 @@ def registerForProject():
 	else:
 		return url_for("projects", success="You are already part of this project.")
 
-@app.route('/api/createProject', methods=["POST"])
+@application.route('/api/createProject', methods=["POST"])
 def createProject():
 	project_name = request.form['project_name']
 	desc = request.form['desc']
@@ -368,7 +401,7 @@ def createProject():
 	else:
 		return url_for("project", project_id=project.project_id, success="That project was successfully created.")
 		
-@app.route('/api/editProject', methods=["POST"])
+@application.route('/api/editProject', methods=["POST"])
 def editProject():
 	project_id = request.form['project_id']
 	
@@ -384,7 +417,7 @@ def editProject():
 	else:
 		return url_for("projects", success="That project was successfully edited.")
 
-@app.route('/api/leaveProject', methods=["POST"])
+@application.route('/api/leaveProject', methods=["POST"])
 def leaveProject():
 	project_id = request.form['project_id']
 	user_id = current_user.id
@@ -409,7 +442,7 @@ def leaveProject():
 
 
 
-@app.route('/api/deleteProject', methods=["POST"])
+@application.route('/api/deleteProject', methods=["POST"])
 def deleteProject():
 	project_id = request.form['project_id']
 
@@ -427,10 +460,10 @@ def deleteProject():
 
 
 # some protected url
-@app.route('/')
+@application.route('/')
 @nocache
 def home():
 	return render_template("index.html")
 
 if __name__ == "__main__":
-	app.run(host="127.0.0.1", port=5000,debug=True)
+	application.run(host="127.0.0.1", port=5000,debug=True)
