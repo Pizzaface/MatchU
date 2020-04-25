@@ -90,6 +90,7 @@ class Project(object):
 			groups = []
 
 			while len(groups) != max_groups or numberOfMembers > 1:
+				#print(len(groups), max_groups)
 				group = []
 				found_group = False
 				# Loop each member
@@ -97,20 +98,24 @@ class Project(object):
 					print("FOUND X", x)
 					# get the current member
 					member = members[x]
+					print("member1", member)
 					group.append(member)
 
 					schedule = json.loads(member.schedule)
 
 					for y in range(numberOfMembers):
-						if x == y:
-							continue
-
 						member2 = members[y]
 						schedule2 = json.loads(member2.schedule)
+
+						if member == member2:
+							continue
+						
 
 						compare = compareSchedules(schedule, schedule2)
 
 						if not compare is False:
+							print("member2", member2)
+
 							if not len(compare[0]) > 2:
 								continue
 
@@ -125,10 +130,15 @@ class Project(object):
 
 								final_schedule = compareSchedules(new_schedule, json.loads(member3.schedule))
 
-								if not final_schedule is False:
+								if not final_schedule is False or numberOfMembers == 3:
+									print("member3", member3)
 									group.append(member3)
 									groups.append(group)
 									found_group = True
+
+									if numberOfMembers == 3:
+										numberOfMembers = 0
+
 									break
 								
 								if left_overs == 2:
@@ -136,6 +146,7 @@ class Project(object):
 									left_overs = 0
 									found_group = True
 									break
+
 
 							if len(group) == 3 or found_group:
 								break
@@ -154,7 +165,6 @@ class Project(object):
 
 				if found_group:
 					for student in group:
-						print(student)
 						members.remove(student)
 					
 					numberOfMembers = len(members)
@@ -163,13 +173,14 @@ class Project(object):
 						members = []
 						break
 
-			members = members + no_place
-			left_overs += len(no_place)
+				if len(groups) == max_groups - 1:
+					groups.append(no_place)
 
 			if not members == []:
-				if len(members) == 1 and left_overs == 1:
+				if len(members) == 1:
 					groups[-1].append(members[0])
 				else:
+					print(members)
 					for i in range(0, len(members)):
 						groups.append(members[i:i + 3])
 

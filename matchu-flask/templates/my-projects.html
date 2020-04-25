@@ -55,9 +55,9 @@
                   </div>
                   <div class="col-lg-6">
                     {% if current_user.user_type == "teacher" %}
-                      <a href="#" data-toggle="modal" class="btn btn-danger btn-block" data-macro-id="{{ project.project_id }}" data-target="#delete-macro-modal">Delete</a>
+                      <a href="#" data-toggle="modal" class="btn btn-danger btn-block forget-link" data-macro-id="{{ project.project_id }}" data-target="#delete-macro-modal">Delete</a>
                     {% else %}
-                      <a href="#" data-toggle="modal" class="btn btn-danger btn-block" data-macro-id="{{ project.project_id }}" data-target="#leave-macro-modal">Leave</a>
+                      <a href="#" data-toggle="modal" class="btn btn-danger btn-block forget-link" data-macro-id="{{ project.project_id }}" data-target="#leave-macro-modal">Leave</a>
                     {% endif %}
                     
                   </div>
@@ -154,7 +154,7 @@
       <div class="modal-body">
         <form id="delete-macro-form">
           You will have to rejoin this project with the Project ID!
-          <input type="hidden" class="form-control" name="macro_id" id="leaveMacroID" value="">
+          <input type="hidden" class="form-control" name="project_id" id="leaveMacroID" value="">
         </form>
       </div>
       <div class="modal-footer">
@@ -177,7 +177,7 @@
       <div class="modal-body">
         <form id="delete-macro-form">
           This can not be undone!
-          <input type="hidden" class="form-control" name="macro_id" id="deleteMacroID" value="">
+          <input type="hidden" class="form-control" name="project_id" id="deleteMacroID" value="">
         </form>
       </div>
       <div class="modal-footer">
@@ -196,9 +196,9 @@
 <script type="text/javascript">
   $(".forget-link").click(function() {
     
-    $("#deleteMacroID").val($(this).attr("data-macro-id"))
-    $("#leaveMacroID").val($(this).attr("data-macro-id"))
-    $("#delete-macro-modal > div > div > div.modal-header > h5").text("Are you sure you want to delete " + $("div.card-body > center > a").text() + "?")
+    $("#deleteMacroID").val($(this).attr("data-macro-id"));
+    $("#leaveMacroID").val($(this).attr("data-macro-id"));
+    $("#delete-macro-modal > div > div > div.modal-header > h5").text("Are you sure you want to delete " + $("div.card-body > center > a").text() + "?");
   })
   $('form input').keydown(function (e) {
       if (e.keyCode == 13) {
@@ -271,10 +271,12 @@
           sendResponse = false
         }
       }
+
       values[this.name] = $(this).val();
     });
 
     if (sendResponse == true) {
+      $('#overlay').fadeIn();
       $.post("{{ url_for('createProject') }}",values,function(text) {
         window.location.replace(text)
       })

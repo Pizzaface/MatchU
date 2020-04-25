@@ -31,7 +31,7 @@ from models.student_to_project import StudentToProject
 from classes.anonymous import Anonymous
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:@localhost:3306/matchu"
+# app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:@localhost:3306/matchu"
 
 
 # -------------------------------------- #
@@ -372,10 +372,18 @@ def leaveProject():
 	project_id = request.form['project_id']
 	user_id = current_user.id
 
-	connection = StudentToProject(project_id=project_id, user_id=user_id).first()
+	print(project_id)
+
+	if current_user.is_part_of_project(project_id):
+		connection = StudentToProject.query.filter_by(project_id=project_id, user_id=user_id).first()
+	else:
+		return url_for("projects", error="You are not enrolled in that project.")
+
+	db_session.delete(connection)
+	db_session.commit()
 
 	try:
-		db_session.delete(project)
+		db_session.delete(connection)
 		db_session.commit()
 	except:
 		return jsonify(False)

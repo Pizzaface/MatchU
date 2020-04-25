@@ -44,7 +44,8 @@ class User(object):
 		elif self.user_type == "student":
 			check = StudentToProject.query.filter_by(user_id=self.id, project_id=project_id).count()
 
-		if check:
+		print(check)
+		if check == 1:
 			return True
 		else:
 			return False

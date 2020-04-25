@@ -13,7 +13,7 @@
 
 {% block navbar_right %}
 	{% if current_user.id == project.user_id and not project.autoAssign_group_id == None %}
-		<a href="{{ url_for('assignAutoAssign', project_id=project.project_id) }}"><button class="btn btn-info"><i class="fas fa-user pr-2"></i> Assign Auto-Assign</button></a>
+		<a href="{{ url_for('assignAutoAssign', project_id=project.project_id) }}" id="auto-assign"><button class="btn btn-info"><i class="fas fa-user pr-2"></i> Assign Auto-Assign</button></a>
 	{% endif %}
 	<button class="btn btn-primary" data-toggle="modal" data-target="#new-group-modal"><i class="fas fa-plus"></i> Create Group</button>
 {% endblock %}
@@ -132,6 +132,9 @@
 
 {% block scripts %}
 <script type="text/javascript">
+	$("#auto-assign").click(function() {
+		$("#overlay").fadeIn();
+	})
 	$('#save-new-group').click(function(){
 	    var sendResponse = true;
 	    var values = {};
