@@ -20,7 +20,7 @@
     {% if current_user.user_type == "teacher" %}
       <button class="btn btn-primary" data-toggle="modal" data-target="#new-macro-modal"><i class="fas fa-plus"></i> Create Project</button>
     {% else %}
-      <button class="btn btn-primary" data-toggle="modal" data-target="#register-project-modal"><i class="fas fa-plus"></i> Register for Project</button>
+<!--      <button class="btn btn-primary" data-toggle="modal" data-target="#register-project-modal"><i class="fas fa-plus"></i> Register for Project</button>-->
     {% endif %}
 
 {% endblock %}
@@ -50,7 +50,7 @@
                 <div class="row">
                   <div class="col-lg-6">
                     {% if current_user.user_type == "teacher" %}
-                      <a href="#" data-toggle="modal" class="btn-info btn btn-block" >Edit</a>
+                      <a href="#" data-toggle="modal" class="btn-info btn btn-block"  data-macro-id="{{ project.project_id }}" data-target="#edit-macro-modal">Edit</a>
                     {% endif %}
                   </div>
                   <div class="col-lg-6">
@@ -78,15 +78,45 @@
 {% else %}
   <center>
   <h2>You don't have any projects set up currently.</h2>
+    <hr>
   {% if current_user.user_type == "teacher" %}
     <h5>Would you like to... <button class="btn btn-primary" data-toggle="modal" data-target="#new-macro-modal">Create a Project</button>?</h5>
   {% else %}
-    <h5>Would you like to... <button class="btn btn-primary" data-toggle="modal" data-target="#register-project-modal">Register for a Project</button>?</h5>
+    <div class="container">
+	<form id="register-project-form">
+      <div class="row">
+        <div class="col-5 text-right">
+          <span style="line-height: 2">Which programming languages are you most proficient with?</span>
+        </div>
+        <div class="col">
+          <input type="text" id="txtStrengths" name="projStrengths" class="form-control req" placeholder="Python, Javascript, C#, ..etc"/>
+        </div>
+      </div>
+      <div class="row mt-3">
+      	<div class="col-5 text-right">
+        	<span style="line-height: 2">Project ID:</span>
+        </div>
+        <div class="col">
+        	<input type="text" class="form-control req" id="macroName" name="project_id" placeholder="The project ID your teacher gave you.">
+			<small id="nameHint" class="form-text text-muted"></small>
+        </div> 
+      </div>
+     </form>
+    
+     <div class="row p-3">
+     	<div class="col">
+			<button type="button" id="register-proj" class="btn btn-primary">Register for a Project</button>
+<!--          <button class="btn btn-primary" data-toggle="modal" data-target="#register-project-modal" id="btnRegister">Register for a Project</button>-->
+        </div>
+      </div>
+    </div>
+
   {% endif %}
   </center>
 
 {% endif %}
 
+<!--
 <div class="modal fade show" tabindex="-1" role="dialog" id="register-project-modal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -111,6 +141,7 @@
     </div>
   </div>
 </div>
+-->
 
 <div class="modal fade show" tabindex="-1" role="dialog" id="new-macro-modal">
   <div class="modal-dialog" role="document">
@@ -132,11 +163,17 @@
             <label for="macroDesc">Description:</label>
             <textarea class="form-control" id="macroDesc" name="desc" placeholder="Put a description for your Project here"> </textarea>
           </div>
+		  <div class="form-group">
+            <label for="macroPill">Pillars:</label>
+            <input type="text" class="form-control" id="macroPill" name="pill" placeholder="Put your project pillars here"/> 
+          </div>
         </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" id="save-new-macro" class="btn btn-primary">Save changes</button>
+        <button type="button" id="save-new-macro" class="btn btn-primary">Save changes
+          <span id='save-new-macro-span' class="text-light" role="status" aria-hidden="true"></span>
+          <span class="sr-only">Loading...</span></button>
       </div>
     </div>
   </div>
@@ -188,6 +225,38 @@
   </div>
 </div>
 
+<div class="modal fade show" tabindex="-1" role="dialog" id="edit-macro-modal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Project</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="edit-macro-form">
+          <div class="form-group">
+            <label for="macroName">New Project Name:</label>
+            <input type="text" class="form-control" id="macroName" name="project_name" placeholder="Your new Project name">
+            <small id="nameHint" class="form-text text-muted">New Project Name</small>
+          </div>
+          <div class="form-group">
+            <label for="macroDesc">Description:</label>
+            <textarea class="form-control" id="macroDesc" name="desc" placeholder="Put a new description for your Project here"> </textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" id="save-new-macro" class="btn btn-primary">Save changes
+          <span id='edit-new-macro-span' class="text-light" role="status" aria-hidden="true"></span>
+          <span class="sr-only">Loading...</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %}
 
 {% block scripts %}
@@ -195,10 +264,9 @@
 
 <script type="text/javascript">
   $(".forget-link").click(function() {
-    
-    $("#deleteMacroID").val($(this).attr("data-macro-id"));
-    $("#leaveMacroID").val($(this).attr("data-macro-id"));
-    $("#delete-macro-modal > div > div > div.modal-header > h5").text("Are you sure you want to delete " + $("div.card-body > center > a").text() + "?");
+    $("#deleteMacroID").val($(this).attr("data-macro-id"))
+    $("#leaveMacroID").val($(this).attr("data-macro-id"))
+//    $("#delete-macro-modal > div > div > div.modal-header > h5").text("Are you sure you want to delete " + $("div.card-body > center > a").text() + "?")
   })
   $('form input').keydown(function (e) {
       if (e.keyCode == 13) {
@@ -222,8 +290,7 @@
             $("#nameHint").removeClass("text-muted");
             $("#nameHint").addClass("invalid-feedback");
             $("#nameHint").html("You need a valid ID.");
-          }
-          
+          } 
           sendResponse = false
         }
       }
@@ -235,6 +302,7 @@
         window.location.replace(text)
       })
     }
+
     
   });
   $('#delete-macro-button').click(function(){
@@ -242,15 +310,41 @@
     values['project_id'] = $("#deleteMacroID").val()
     $.post("{{ url_for('deleteProject') }}",values,function(text) {
         window.location.replace(text)
-      })
+    })
   });
   $('#leave-macro-button').click(function(){
+	var sendResponse = true;
     values = {}
     values['project_id'] = $("#leaveMacroID").val()
     $.post("{{ url_for('leaveProject') }}",values,function(text) {
         window.location.replace(text)
       })
   });
+  
+  $('#edit-macro-button').click(function(){
+    var sendResponse = true;
+    var values = {};
+    $("#edit-macro-form input, textarea").each(function() {
+      if (this.name == "project_name") {
+        if ($(this).val() == "") {
+          $(this).addClass("is-invalid");
+          if (this.name == "project_name") {
+            $("#nameHint").removeClass("text-muted");
+            $("#nameHint").addClass("invalid-feedback");
+            $("#nameHint").html("You need a valid name.");
+          } else {
+            $("#invoHint").removeClass("text-muted");
+            $("#invoHint").addClass("invalid-feedback");
+            $("#invoHint").html("You need a valid invocation.");
+          }
+          sendResponse = false
+        }
+      }
+      values[this.name] = $(this).val();
+      
+    });
+  });
+	
   $('#save-new-macro').click(function(){
     var sendResponse = true;
     var values = {};
@@ -267,22 +361,42 @@
             $("#invoHint").addClass("invalid-feedback");
             $("#invoHint").html("You need a valid invocation.");
           }
-          
           sendResponse = false
         }
       }
 
       values[this.name] = $(this).val();
+      
     });
 
     if (sendResponse == true) {
-      $('#overlay').fadeIn();
+      //Show loading wheel on save button click
+      $('#save-new-macro-span').addClass('spinner-border spinner-border-sm');
       $.post("{{ url_for('createProject') }}",values,function(text) {
         window.location.replace(text)
       })
     }
+    });
     
-  });
+  //Disable register button if language text box not filled out
+    $(document).ready(function(){
+        $('#register-proj').prop('disabled',true);
+        $('#txtStrengths, #macroName').keyup(function(){
+			var empty = false;
+			$('#register-project-form input').each(function() {
+				if ($(this).val() == '') {
+					empty = true;
+				}
+				
+				if (empty) {
+					$('#register-proj').prop('disabled', true);
+				} else {
+					$('#register-proj').prop('disabled', false);
+				}
+			});   
+        })
+    });  
+  
 
 //  $('.card-deck').slick({
 //

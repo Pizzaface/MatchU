@@ -31,7 +31,7 @@ from models.student_to_project import StudentToProject
 from classes.anonymous import Anonymous
 
 app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:@localhost:3306/matchu"
+app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://admin:2020MATCHu!@matchuinstance.cfxzlncqju3l.us-east-1.rds.amazonaws.com:3306/matchu"
 
 
 # -------------------------------------- #
@@ -57,7 +57,7 @@ login_manager.anonymous_user = Anonymous
 login_manager.init_app(app)
 
 
-debug = True
+debug = False
 
 # When the app is turned off
 @app.teardown_appcontext
@@ -142,6 +142,7 @@ def login():
 		email = request.form['email']
 		password = request.form['password']
 		registered_user = User.query.filter_by(email=email).first()
+        
 		if registered_user is None:
 			return render_template('login.html', error="That didn't work.")
 
@@ -317,10 +318,10 @@ def projects():
 @app.route('/api/registerForProject', methods=["POST"])
 def registerForProject():
 	project_id = request.form['project_id']
-
+	
 	proj = Project.query.filter_by(nice_url=project_id).first()
-
-
+	
+	
 	if not current_user.is_part_of_project(proj.project_id):
 		stud_to_proj = StudentToProject(proj.project_id, current_user.id)
 
@@ -366,8 +367,24 @@ def createProject():
 		return url_for("projects", error="Something went wrong, try again a little later.")
 	else:
 		return url_for("project", project_id=project.project_id, success="That project was successfully created.")
+		
+@app.route('/api/editProject', methods=["POST"])
+def editProject():
+	project_id = request.form['project_id']
+	
+	proj = Project.query.filter_by(project_id=project_id).first()
+	
+	proj.project_name = request.form['project_name']
+	proj.description = request.form['desc']
+	
+	try:
+		db_session.commit()
+	except:
+		return url_for("projects", error="Something went wrong, try again a little later.")
+	else:
+		return url_for("projects", success="That project was successfully edited.")
 
-@app.route("/api/leaveProject", methods=["POST"])
+@app.route('/api/leaveProject', methods=["POST"])
 def leaveProject():
 	project_id = request.form['project_id']
 	user_id = current_user.id
