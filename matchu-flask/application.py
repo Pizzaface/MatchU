@@ -351,12 +351,13 @@ def projects():
 @application.route('/api/registerForProject', methods=["POST"])
 def registerForProject():
 	project_id = request.form['project_id']
+	project_strengths = request.form['projectStrengths']
 	
 	proj = Project.query.filter_by(nice_url=project_id).first()
 	
 	
 	if not current_user.is_part_of_project(proj.project_id):
-		stud_to_proj = StudentToProject(proj.project_id, current_user.id)
+		stud_to_proj = StudentToProject(proj.project_id, current_user.id, project_strengths)
 
 		try:
 			db_session.add(stud_to_proj)

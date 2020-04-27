@@ -19,7 +19,7 @@
 {% block navbar_right %}
     {% if current_user.user_type == "teacher" %}
       <button class="btn btn-primary" data-toggle="modal" data-target="#new-macro-modal"><i class="fas fa-plus"></i> Create Project</button>
-	  <button class="btn btn-primary" data-toggle="modal" data-target="#project-report-modal"><i class="fas fa-list"></i> Create Project Report</button>
+	  <button class="btn btn-primary" data-toggle="modal" data-target="#project-report-modal"><i class="fas fa-list"></i> Project Report</button>
     {% else %}
 <!--      <button class="btn btn-primary" data-toggle="modal" data-target="#register-project-modal"><i class="fas fa-plus"></i> Register for Project</button>-->
     {% endif %}
@@ -90,7 +90,7 @@
           <span style="line-height: 2">Which programming languages are you most proficient with?</span>
         </div>
         <div class="col">
-          <input type="text" id="txtStrengths" name="projStrengths" class="form-control req" placeholder="Python, Javascript, C#, ..etc"/>
+          <input type="text" id="txtStrengths" name="projectStrengths" class="form-control req" placeholder="Python, Javascript, C#, ..etc"/>
         </div>
       </div>
       <div class="row mt-3">
@@ -157,8 +157,8 @@
         <form id="new-macro-form">
           <div class="form-group">
             <label for="macroName">Project Name:</label>
-            <input type="text" class="form-control" id="macroName" name="project_name" placeholder="Your new Project name">
-            <small id="nameHint" class="form-text text-muted">This how I'll refer to your Project</small>
+            <input type="text" class="form-control" id="macroName" name="project_name" placeholder="Your new Project name"/>
+            <small id="nameHint" class="form-text text-muted">This is how I'll refer to your Project</small>
           </div>
           <div class="form-group">
             <label for="macroDesc">Description:</label>
@@ -352,6 +352,7 @@
         }
       }
       values[this.name] = $(this).val();
+	  
     });
 
     if (sendResponse == true) {

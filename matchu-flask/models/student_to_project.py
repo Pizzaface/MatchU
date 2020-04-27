@@ -16,18 +16,20 @@ def randomString(stringLength=10):
 class StudentToProject(object):
 	query = db_session.query_property()
 
-	def __init__(self, project_id, user_id):
+	def __init__(self, project_id, user_id, project_strengths):
 		self.project_id = project_id
 		self.user_id = user_id
+		self.project_strengths = project_strengths
  
 	def __repr__(self):
-		return '<StudentToProject %r->%r>' % (self.user_id, self.project_id)
+		return '<StudentToProject %r->%r->%r>' % (self.user_id, self.project_id, self.project_strengths)
 
 student_to_projects = Table('students_to_projects', metadata,
 	Column('id', Integer(), primary_key=True),
 	Column('project_id', String(80), ForeignKey('projects.project_id')),
 	Column('user_id', String(80), ForeignKey('users.id')),
+	Column('project_strengths', String(80)),						
 	db.UniqueConstraint('project_id', 'user_id', name='Index 3'),
 	extend_existing=True
 )
-mapper(StudentToProject, student_to_projects)
+mapper(StudentToProject, student_to_projects) 
