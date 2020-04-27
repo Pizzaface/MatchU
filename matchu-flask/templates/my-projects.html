@@ -19,6 +19,7 @@
 {% block navbar_right %}
     {% if current_user.user_type == "teacher" %}
       <button class="btn btn-primary" data-toggle="modal" data-target="#new-macro-modal"><i class="fas fa-plus"></i> Create Project</button>
+	  <button class="btn btn-primary" data-toggle="modal" data-target="#project-report-modal"><i class="fas fa-list"></i> Create Project Report</button>
     {% else %}
 <!--      <button class="btn btn-primary" data-toggle="modal" data-target="#register-project-modal"><i class="fas fa-plus"></i> Register for Project</button>-->
     {% endif %}
@@ -258,6 +259,45 @@
   </div>
 </div>
 
+<div class="modal" tabindex="-1" role="dialog" id="project-report-modal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Project(s) Report</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+	  	<table id='copy-me' class="table table-striped table-sm table-borderless">
+			<thead>
+				<tr>
+					<th scope="col">Project</th>
+					<th scope="col">Code</th>
+				</tr>
+			 </thead>
+			<tbody>
+				{% for project in projects %}
+					<tr>
+						<td>
+							{{ project.project_name }} 
+						</td>
+						<td>
+							{{ project.nice_url }}		
+						</td>
+					</tr>
+		  		{% endfor %}
+			</tbody>
+		  </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" id="copyToClipboard" class="btn btn-primary">Copy All to Clipboard</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %}
 
 {% block scripts %}
@@ -421,41 +461,20 @@
 			});   
         })
     });  
-  
-
-//  $('.card-deck').slick({
-//
-//    dots: true,
-//    infinite: false,
-//    speed: 300,
-//    slidesToShow: 4,
-//    responsive: [
-//      {
-//        breakpoint: 1000,
-//        settings: {
-//          slidesToShow: 4,
-//          slidesToScroll: 2
-//        }
-//      },
-//      {
-//        breakpoint: 600,
-//        settings: {
-//          slidesToShow: 2,
-//          slidesToScroll: 2
-//        }
-//      },
-//      {
-//        breakpoint: 480,
-//        settings: {
-//          slidesToShow: 1,
-//          slidesToScroll: 1
-//        }
-//      }
-//      // You can unslick at a given breakpoint now by adding:
-//      // settings: "unslick"
-//      // instead of a settings object
-//    ]
-//  });
-
+	
+// Code to copy all of project report to clipboard
+		var table = document.querySelector('#copy-me');
+		var buttonCopy = document.querySelector('#copyToClipboard');
+		function selectNode(node){
+		  var range  =  document.createRange();
+		  range.selectNodeContents(node)
+		  var select =  window.getSelection()
+		  select.removeAllRanges()
+		  select.addRange(range)
+		}
+		buttonCopy.addEventListener('click',function(){
+		  selectNode(table);
+		  document.execCommand('copy')
+		})
 </script>
 {% endblock %}
