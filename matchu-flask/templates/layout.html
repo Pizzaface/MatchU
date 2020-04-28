@@ -50,7 +50,11 @@
 				<a class="nav-link" href="{{ url_for('help') }}">Help</a>
 			</li>
 			<li class="nav-item">
+				{% if current_user.user_type == "teacher" %}
 				<a class="nav-link" href="{{ url_for('projects') }}">Your Projects</a>
+				{% else %}
+				<a class="nav-link" href="{{ url_for('projects') }}">Your Project</a>
+				{% endif %}
 			</li>
 			<li class="nav-item">
 				<a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
