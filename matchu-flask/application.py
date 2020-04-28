@@ -383,10 +383,9 @@ def createProject():
 
 
 	project = Project(project_name=project_name, user_id=current_user.id, description=desc)
-	
 	auto_assign_group = Group("Auto-Assign Group", project.project_id, "This is a group that will auto assign you to the group with the best schedule")
 	project.autoAssign_group_id = auto_assign_group.id
-
+	
 	try:
 		db_session.add(project)
 		db_session.add(auto_assign_group)
@@ -416,7 +415,7 @@ def editProject():
 	proj = Project.query.filter_by(project_id=project_id).first()
 	
 	proj.project_name = request.form['project_name']
-	proj.description = request.form['desc']
+	proj.description = request.form['projectEditdesc']
 	
 	try:
 		db_session.commit()
