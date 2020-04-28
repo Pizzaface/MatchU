@@ -47,10 +47,13 @@
 				<span class="nav-link text-white">Welcome {{ current_user.username }}!</span>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link" href="{{ url_for("projects") }}">Your Projects</a>
+				<a class="nav-link" href="{{ url_for('help') }}">Help</a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link" href="{{ url_for("logout") }}">Logout</a>
+				<a class="nav-link" href="{{ url_for('projects') }}">Your Projects</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
 			</li>
 			{% block navbar_left %}
 				
@@ -58,7 +61,7 @@
 		</ul>
 		<span class="navbar-text">
 			{% block navbar_right %}
-				<a href="{{ url_for("logout") }}?">Log Out</a>
+				<a href="{{ url_for('logout') }}?">Log Out</a>
 			{% endblock %}
 		</span>
 	  </div>

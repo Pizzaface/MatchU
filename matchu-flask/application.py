@@ -347,6 +347,13 @@ def projects():
 		return render_template("my-projects.html", projects=current_user.get_projects())
 	elif current_user.user_type == "teacher":
 		return render_template("my-projects.html", projects=current_user.get_projects())
+	
+@application.route("/help")
+def help():
+	if current_user.user_type == "student":
+		return render_template("help.html")
+	elif current_user.user_type == "teacher":
+		return render_template("help.html")	
 
 @application.route('/api/registerForProject', methods=["POST"])
 def registerForProject():
