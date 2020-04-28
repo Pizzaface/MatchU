@@ -14,5 +14,8 @@ class Anonymous(AnonymousUserMixin):
 	def is_anonymous(self):
 		return True
 
+	def is_part_of_project(*args):
+		return None
+
 	def __type__(self):
 		return "Anonymous()"

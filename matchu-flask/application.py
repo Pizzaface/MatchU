@@ -226,7 +226,7 @@ def project(project_id):
 	error = request.args.get('error', default = None, type = str)
 	success = request.args.get('success', default = None, type = str)
 
-	if current_user.is_part_of_project(project_id):
+	if current_user.is_part_of_project(project_id) is True:
 		project = Project.query.filter_by(project_id=project_id).first()
 
 		groups = project.get_groups()
@@ -238,8 +238,10 @@ def project(project_id):
 
 
 		return render_template("project.html", project=project)
-	else:
+	elif current_user.is_part_of_project(project_id) is False:
 		return render_template("my-projects.html", error="You don't have access to this project.")
+	elif current_user.is_part_of_project(project_id) is None:
+		return redirect(url_for("login", error="You are not logged in."))
 
 
 @login_required
@@ -265,7 +267,6 @@ def joinGroup(group_id):
 
 	if current_user.user_type == "student":
 		current_group = StudentToGroup.query.filter_by(user_id=current_user.id, group_id=group_id).first()
-		print(current_group )
 		if current_group == None:
 			student_group = StudentToGroup.query.filter_by(user_id=current_user.id, project_id=project.project_id).first()
 
@@ -391,10 +392,10 @@ def createProject():
 		db_session.add(auto_assign_group)
 		db_session.commit()
 
-		if debug:
+		if True:
 			all_students = User.query.filter_by(user_type="student").all()
 			for student in all_students:
-				stud_to_proj = StudentToProject(project.project_id, student.id)
+				stud_to_proj = StudentToProject(project.project_id, student.id, "")
 				stud_to_aass = StudentToGroup(group_id=auto_assign_group.id, user_id=student.id)
 
 				try:
@@ -473,4 +474,4 @@ def home():
 	return render_template("index.html")
 
 if __name__ == "__main__":
-	application.run(host="127.0.0.1", port=5000,debug=True)
+	application.run(host="127.0.0.1", port=5000,debug=debug)

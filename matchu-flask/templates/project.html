@@ -25,7 +25,7 @@
 	<div class="row h-100 w-100">
 		<div class="col-lg-3 col-md-4 w-100 bg-primary text-white" id="project-info">
 			<div class="info">
-				<h1>{{ project.project_name }}</h1>
+				<h4>{{ project.project_name }}</h4>
 				<span id="desc">
 					{{ project.description }}
 				</span>
@@ -61,9 +61,9 @@
 					</div>
 					<div class="row mt-2">
 				{% endif %}
-				<div class="card" style="width: 20rem; margin-left: 8px; min-height: 19rem">
+				<div class="card" style="width: 20rem; margin-left: 8px; min-height: 25rem">
 				  <div class="card-body">
-				    <h3 class="card-title text-center">{{ group.name }}</h2>
+				    <h3 class="card-title text-center">{{ group.name }}</h3>
 				    
 				    <p class="card-text text-center">Members: {{ group.get_members()|length }}{% if not group.id == project.autoAssign_group_id %} / 4 {% endif %}</p>
 				    
@@ -71,7 +71,10 @@
 				    <ul class="members">
 				    {% if not group.id == project.autoAssign_group_id %}
 				    	{% for user in group.get_members() %}
-				    		<li>{{ user.username }}</li>
+				    		<li>
+				    			<b>{{ user.username }}</b><br>
+				    			{{ user.get_project_strength(project.project_id) }}
+				    		</li>
 				    	{% endfor %}
 				    {% endif %}
 
@@ -84,6 +87,8 @@
 
 	                    {% else %}
 	                    	{% if group.get_members()|length < 4 and not group.id == project.autoAssign_group_id%}
+	                    		<center><a href="{{ url_for('joinGroup', group_id=group.id) }}" class="btn btn-primary position-absolute" style="bottom: 10px; left: 20%; right: 20%">Join Group</a></center>
+	                    	{% elif group.id == project.autoAssign_group_id %}
 	                    		<center><a href="{{ url_for('joinGroup', group_id=group.id) }}" class="btn btn-primary position-absolute" style="bottom: 10px; left: 20%; right: 20%">Join Group</a></center>
 	                    	{% endif %}
 	                    {% endif %}

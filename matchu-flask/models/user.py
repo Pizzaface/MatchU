@@ -44,7 +44,6 @@ class User(object):
 		elif self.user_type == "student":
 			check = StudentToProject.query.filter_by(user_id=self.id, project_id=project_id).count()
 
-		print(check)
 		if check == 1:
 			return True
 		else:
@@ -62,6 +61,15 @@ class User(object):
 			self.projects = projects
 
 		return self.projects
+
+	def get_project_strength(self, project_id):
+		if not self.is_part_of_project(project_id):
+			return None
+		else:
+			connection = StudentToProject.query.filter_by(user_id=self.id, project_id=project_id).first()
+
+			if not connection is None:
+				return connection.project_strengths
 
 	def is_authenticated(self):
 		return True

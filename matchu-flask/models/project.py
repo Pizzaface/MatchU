@@ -68,6 +68,7 @@ class Project(object):
 
 
 	def assign_autoassign(self):
+		print("hello world")
 		autoAssign_group = Group.query.filter_by(id=self.autoAssign_group_id).first()
 
 		no_place = []
@@ -180,8 +181,10 @@ class Project(object):
 					no_place = []
 
 			if not no_place == []:
-				if len(no_place) == 1:
+				if len(no_place) == 1 and len(groups[-1]) < 4:
 					groups[-1].append(no_place[0])
+				elif len(groups[-1]) < 4:
+					groups.append(no_place[0])
 				else:
 					print(no_place)
 					for i in range(0, len(no_place)):
