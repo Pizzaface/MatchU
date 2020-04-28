@@ -28,7 +28,11 @@
 
 {% block body %}
 {% if projects is defined and projects[0] is defined %}
-  <h3><center>Your Projects</center></h3>
+  {% if projects|length >= 2 %}
+    <h3><center>Your Projects</center></h3>
+  {% else %}
+    <h3><center>Your Project</center></h3>
+  {% endif %}
   <div class="row carousel-list">
     <div class="carousel-inner">
       <div class="card-deck">
