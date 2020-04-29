@@ -57,7 +57,7 @@ login_manager.anonymous_user = Anonymous
 login_manager.init_app(application)
 
 
-debug = True
+debug = False
 
 # When the application is turned off
 @application.teardown_appcontext
@@ -479,4 +479,4 @@ def home():
 	return render_template("index.html")
 
 if __name__ == "__main__":
-	application.run(host="127.0.0.1", port=5000,debug=True)
+	application.run(host="127.0.0.1", port=5000,debug=debug)
