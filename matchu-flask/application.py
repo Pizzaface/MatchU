@@ -363,8 +363,10 @@ def registerForProject():
 	
 	proj = Project.query.filter_by(nice_url=project_id).first()
 	
+	if proj is None:
+		return url_for("projects", error="That project doesn't exist.")
 	
-	if not current_user.is_part_of_project(proj.project_id):
+	if not current_user.is_part_of_project(proj.project_id) and len(proj.get_members()) < 12:
 		stud_to_proj = StudentToProject(proj.project_id, current_user.id, project_strengths)
 
 		try:
@@ -375,7 +377,10 @@ def registerForProject():
 		else:
 			return url_for("projects", success="You were successfully added.")
 	else:
-		return url_for("projects", success="You are already part of this project.")
+		if current_user.is_part_of_project(proj.project_id):
+			return url_for("projects", success="You are already part of this project.")
+		else:
+			return url_for("projects", error="That project is full.")
 
 @application.route('/api/createProject', methods=["POST"])
 def createProject():
@@ -392,8 +397,8 @@ def createProject():
 		db_session.add(auto_assign_group)
 		db_session.commit()
 
-		if True:
-			all_students = User.query.filter_by(user_type="student").all()
+		if debug:
+			all_students = User.query.filter_by(user_type="student").all()[:12]
 			for student in all_students:
 				stud_to_proj = StudentToProject(project.project_id, student.id, "")
 				stud_to_aass = StudentToGroup(group_id=auto_assign_group.id, user_id=student.id)
@@ -474,4 +479,4 @@ def home():
 	return render_template("index.html")
 
 if __name__ == "__main__":
-	application.run(host="127.0.0.1", port=5000,debug=debug)
+	application.run(host="127.0.0.1", port=5000,debug=True)

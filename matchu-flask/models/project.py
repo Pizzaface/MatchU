@@ -65,7 +65,10 @@ class Project(object):
 
 		return self.groups
 	
+	def get_members(self):
+		self.members = StudentToProject.query.filter_by(project_id=self.project_id).all()
 
+		return self.members
 
 	def assign_autoassign(self):
 		print("hello world")
@@ -78,46 +81,45 @@ class Project(object):
 		numberOfMembers = len(members)
 
 		left_overs = numberOfMembers % 3
-		max_groups = numberOfMembers // 3
+		max_groups = 3
 
 		if max_groups in [0, 1]:
 			groups = [members]
 
 		else:
-			if left_overs > 1:
-				max_groups += 1
-
 
 			groups = []
 
-			while len(groups) != max_groups and numberOfMembers > 1:
-				print("GROUPS", len(groups) != max_groups, len(groups), max_groups)
+			while len(groups) <= max_groups and numberOfMembers >= 1:
+				print("GROUPS", len(groups) <= max_groups, len(groups), max_groups)
 				print("MEMBERS", numberOfMembers > 1, numberOfMembers)
+
 				#print(len(groups), max_groups)
 				group = []
 				found_group = False
 				# Loop each member
 				for x in range(numberOfMembers):
-					print("FOUND X", x)
 					# get the current member
 					member = members[x]
-					print("member1", member)
+					print("Found Member: ", member)
 					group.append(member)
 
 					schedule = json.loads(member.schedule)
 
 					for y in range(numberOfMembers):
+
 						member2 = members[y]
 						schedule2 = json.loads(member2.schedule)
 
 						if member == member2:
 							continue
 						
+						print("TESTING MEMBER 2:", member2)
 
 						compare = compareSchedules(schedule, schedule2)
 
 						if not compare is False:
-							print("member2", member2)
+							print("Found Member: ", member2)
 
 							if not len(compare[0]) > 2:
 								continue
@@ -131,10 +133,11 @@ class Project(object):
 								if member3 == member2 or member3 == member:
 									continue
 
+								print("TESTING MEMBER 3:", member3)
 								final_schedule = compareSchedules(new_schedule, json.loads(member3.schedule))
 
 								if not final_schedule is False:
-									print("member3", member3)
+									print("Found Member: ", member3)
 									group.append(member3)
 									groups.append(group)
 									found_group = True
@@ -157,14 +160,13 @@ class Project(object):
 
 					if found_group:
 						break
-
-					if len(group) < 3:
+					elif len(group) < 3:
+						print("no group")
 						no_place.append(member)
+						print(no_place)
 						members.remove(member)
 						numberOfMembers = len(members)
 						break
-
-
 
 				if found_group:
 					for student in group:
@@ -176,24 +178,25 @@ class Project(object):
 						members = []
 						break
 
-				if len(groups) == max_groups - 1:
+				if len(groups) == max_groups and 1 <= len(no_place) <= 4:
 					groups.append(no_place)
 					no_place = []
+					print("no_place reset")
+					break
 
 			if not no_place == []:
 				if len(no_place) == 1 and len(groups[-1]) < 4:
 					groups[-1].append(no_place[0])
-				elif len(groups[-1]) < 4:
-					groups.append(no_place[0])
+				elif len(groups[-1]) >= 4:
+					groups.append([no_place[0]])
 				else:
-					print(no_place)
-					for i in range(0, len(no_place)):
+					for i in range(0, len(no_place), 3):
+						print("no place %s " % i, no_place[i:i + 3])
 						groups.append(no_place[i:i + 3])
 
 		rows_to_add = []
 		for i, group in enumerate(groups, start=1):
 			groupObj = Group("Group #%s" % (i), self.project_id, "Describe your project here!")
-			
 			try:
 				db_session.add(groupObj)
 				db_session.commit()
@@ -241,3 +244,4 @@ mapper(Project, projects)
 
 from .group import Group
 from .student_to_group import StudentToGroup
+from .student_to_project import StudentToProject
