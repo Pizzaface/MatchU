@@ -15,7 +15,11 @@
 	{% if current_user.id == project.user_id and not project.autoAssign_group_id == None %}
 		<a href="{{ url_for('assignAutoAssign', project_id=project.project_id) }}" id="auto-assign"><button class="btn btn-info"><i class="fas fa-user pr-2"></i> Assign Auto-Assign</button></a>
 	{% endif %}
-	<button class="btn btn-primary" data-toggle="modal" data-target="#new-group-modal"><i class="fas fa-plus"></i> Create Group</button>
+	{% if current_user.id == project.user_id %}
+		<button class="btn btn-primary" data-toggle="modal" data-target="#new-group-modal"><i class="fas fa-plus"></i> Create Group</button>
+	{% elif not project.autoAssign_group_id == None %}
+		<button class="btn btn-primary" data-toggle="modal" data-target="#new-group-modal"><i class="fas fa-plus"></i> Create Group</button>
+	{% endif %}
 {% endblock %}
 
 {% block errorhandling %}
@@ -81,7 +85,7 @@
 				    {% if group.has_member(current_user.id) %}
 						<a href="{{ url_for('leaveGroup', group_id=group.id) }}" class="btn position-absolute btn-danger" style="bottom: 10px; left: 20%; right: 20%">Leave Group</a>
 				    {% else %}
-				    	{% if current_user.user_type == "teacher" and not group.id == project.autoAssign_group_id %}
+				    	{% if current_user.id == project.user_id and not group.id == project.autoAssign_group_id %}
 	                      <center><a href="{{ url_for('deleteGroup', group_id=group.id) }}" class="btn btn-danger position-absolute" style="bottom: 10px; left: 20%; right: 20%">Delete Group</a></center>
 	                    {% elif current_user.user_type == "teacher" and group.id == project.autoAssign_group_id %}
 

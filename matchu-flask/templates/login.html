@@ -21,6 +21,9 @@
     margin:auto;
 
   }
+  #loginModal {
+    overflow-y: auto !important;
+  }
   a:hover {
     text-decoration: none;
   }
@@ -102,7 +105,7 @@
 		});  
 		  
         $('.txtTime').timepicker();
-        $('.txtTime').timepicker('option', { 'minTime': '8:00am', 'timeFormat': 'h:i A', 'step': 60 })
+        $('.txtTime').timepicker('option', { 'minTime': '8:00am', 'maxTime':'11:00pm', 'timeFormat': 'h:i A', 'step': 60, 'disableTextInput': true })
         
         
         //Hide Schedule on teacher registration form
