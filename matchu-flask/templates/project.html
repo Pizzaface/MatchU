@@ -65,14 +65,14 @@
 					</div>
 					<div class="row mt-2">
 				{% endif %}
-				<div class="card" style="width: 20rem; margin-left: 8px; min-height: 25rem">
+				<div class="card" style="width: 25rem; margin-left: 8px; min-height: 25rem">
 				  <div class="card-body">
 				    <h3 class="card-title text-center">{{ group.name }}</h3>
 				    
 				    <p class="card-text text-center">Members: {{ group.get_members()|length }}{% if not group.id == project.autoAssign_group_id %} / 4 {% endif %}</p>
 				    
 				    <p class="card-text">{{ group.solution_desc }}</p>
-				    <ul class="members">
+				    <ul class="members" style="height: 255px; overflow: auto;">
 				    {% if not group.id == project.autoAssign_group_id %}
 				    	{% for user in group.get_members() %}
 				    		<li>

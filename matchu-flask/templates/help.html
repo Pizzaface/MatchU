@@ -26,10 +26,10 @@
 					<h3>Setting up projects</h3>
 					<ul>
 						<li class="mt-4 mb-4" >Upon logging in to MatchU as a teacher, you will be greeted with a simple form asking you to create your first project.</li>
-						<iframe width="100%" height="560" src="https://www.youtube.com/embed/1HpdCjFoEos" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+						<iframe width="100%" height="560" src="https://www.youtube.com/embed/Xpw6a2O8L5Y" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 						<li class="mt-4 mb-4">Once all your projects are created you will need to copy a list of all of your project codes so you can paste them in to an area for students to view.</li>
-						<iframe width="100%" height="560px" src="https://www.youtube.com/embed/GBRhkPfXaG4" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+						<iframe width="100%" height="560" src="https://www.youtube.com/embed/hnmOrf8aHqs" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 					</ul>
 					<hr>
 					<h3>Managing Groups</h3>
@@ -37,20 +37,51 @@
 						<li class="mt-4">
 							Once students begin to sign up for projects using the codes you provided, they will be creating and joining groups. As a teacher account, you do not need to do anything further for setup, but you are able to manage groups in certain ways.
 						</li>
-						<h4 class="mt-4">Create / Alter Groups</h3>
-						<li>
-							You are able to manually create a group for students to join
+						<h4 class="mt-4">Create / Alter Groups</h4>
+						<li class="mb-4">You are able to manually create a group for students to join</li>
+						<iframe width="100%" height="560" src="https://www.youtube.com/embed/7go8-uQE6Tk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+						
+						<h4 class="mt-4">Auto-Assign Students</h4>
+						<li>If a student chooses to be auto-assigned to a group with the closest matching schedule, they will be entered into a pool of similar users. We suggest the teacher gives a deadline at the start for students to enter if they wish to be auto-assigned.
 						</li>
-						<h4 class="mt-4">Auto-Assign Students</h3>
-						<li>
-							You are able to manually create a group for students to join
-						</li>
+						<li class="mb-4">Once all users have signed up, the teacher can click the 'Auto-Assign' button at the top of the page to place all of those students in to groups.</li>
+						<iframe width="100%" height="560" src="https://www.youtube.com/embed/JLayi9b7H2E" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+						
 					</ul>
 				</div>
 			</div>
 		</div>
 	{% endif %}
-
+	{% if current_user.user_type == "student" %}
+		<div class="container">
+			<div class="row">
+				<div class="col">
+					<h2>MatchU is designed for ease of use and efficiency!</h2>
+					<hr>
+					<h3>Register for a project</h3>
+					<ul>
+						<li class="mt-4 mb-1" >Upon logging in to MatchU as a student, you will be greeted with a simple form asking you to submit</li>
+						<ul>
+							<li>Project ID (supplied by your teacher)
+							<li class="mb-1">What skills you can contribute toward this project</li>
+						</ul>
+					</ul>
+					<img src="{{ url_for('static', filename = 'img/1.jpg') }}" width="100%" height="400px">
+					<h3>Join or create a group</h3>
+					<ul>
+						<li class="mt-4 mb-1">Once you access your project page you will see a list of available groups</li>
+						<ul>
+							<li>The 'Auto-Assign Group' will enter you into a pool of students that will be auto-assigned based on the closest matching schedules that were created during registration.</li>
+							<li class="mb-4">The teacher will set a date to join a group and on that date he will run the auto-assign function that will place any users in the auto-assign group.</li>
+						</ul>	
+					</ul>
+						<iframe width="100%" height="560" src="https://www.youtube.com/embed/2y1jN_e0rE8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+					<hr>
+					
+				</div>
+			</div>
+		</div>
+	{% endif %}
 
 {% endblock %}
 
